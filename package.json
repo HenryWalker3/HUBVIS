@@ -2,7 +2,7 @@
   "name": "projects-data-visualisation",
   "version": "1.0.0",
   "description": "Projects: Data Visualisation - HUBVIS",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
     "test": "run"
   },

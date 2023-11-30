@@ -1,0 +1,16 @@
+{
+    "name": "Project: 'HUBVIS'- Data Visualisation",
+    "short_name": "HUBVIS",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2b5da8",
+    "icons": [
+      {
+        "src": "images/Web_Logo.PNG",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+}
+  
