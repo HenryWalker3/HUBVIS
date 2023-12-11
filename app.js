@@ -1,62 +1,46 @@
-import * as d3 from "d3";
+// // import * as d3 from "d3";
 
-fetch('counties-albers-10m.json')
-  .then(response => response.json())
-  .then(data => {
-    // Use your JSON data here
-  })
-  .catch(error => console.error('Error:', error));
+console.log(d3);
+d3.select('.visualisation-item')
+  .selectAll('p')
+  .data([1,2,3])
+  .enter()
+  .append('p');
 
-fetch('package-lock.json')
-  .then(response => response.json())
-  .then(data => {
-    // Use your JSON data here
-  })
-  .catch(error => console.error('Error:', error));
+// {
+//   // Declare the chart dimensions and margins.
+//   const width = 640;
+//   const height = 400;
+//   const marginTop = 20;
+//   const marginRight = 20;
+//   const marginBottom = 30;
+//   const marginLeft = 40;
 
-fetch('package.json')
-  .then(response => response.json())
-  .then(data => {
-    // Use your JSON data here
-  })
-  .catch(error => console.error('Error:', error));
+//   // Declare the x (horizontal position) scale.
+//   const x = d3.scaleUtc()
+//       .domain([new Date("2023-01-01"), new Date("2024-01-01")])
+//       .range([marginLeft, width - marginRight]);
 
-fetch('package-lock.json')
-  .then(response => response.json())
-  .then(data => {
-    // Use your JSON data here
-  })
-  .catch(error => console.error('Error:', error));
+//   // Declare the y (vertical position) scale.
+//   const y = d3.scaleLinear()
+//       .domain([0, 100])
+//       .range([height - marginBottom, marginTop]);
 
+//   // Create the SVG container.
+//   const svg = d3.create("svg")
+//       .attr("width", width)
+//       .attr("height", height);
 
+//   // Add the x-axis.
+//   svg.append("g")
+//       .attr("transform", `translate(0,${height - marginBottom})`)
+//       .call(d3.axisBottom(x));
 
+//   // Add the y-axis.
+//   svg.append("g")
+//       .attr("transform", `translate(${marginLeft},0)`)
+//       .call(d3.axisLeft(y));
 
-
-// *** ADJUST ALL VALUES TO AUS ***
-d3.json("counties-albers-10m.json").then(function(data) {
-    // "data" contains your JSON data
-    // You can now use this data as required in your D3 visualizations
-    console.log(data);
-}).catch(function(error) {
-    console.error('Error loading the JSON file:', error);
-});
-
-nation = topojson.feature(us, us.objects.nation)
-statemap = new Map(topojson.feature(us, us.objects.states).features.map(d => [d.id, d]))
-countymap = new Map(topojson.feature(us, us.objects.counties).features.map(d => [d.id, d]))
-statemesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b)
-spike = (length, width = 7) => `M${-width / 2},0L0,${-length}L${width / 2},0`
-
-Plot.plot({
-    width: 975,
-    projection: "identity",
-    length: {range: [0, 200]},
-    marks: [
-      Plot.geo(nation, { fill: "#eee" }),
-      Plot.geo(statemesh, { stroke: "white" }),
-      Plot.spike(population, Plot.centroid({length: "population", geometry: ({fips}) => countymap.get(fips)}))
-    ]
-})
-
-
-
+//   // Return the SVG element.
+//   return svg.node();
+// }
