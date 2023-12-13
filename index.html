@@ -1,10 +1,3 @@
-<!-- 
-  1. web icon [DONE]
-  2. text [0% complete]
-  3. general style [0% complete]
-  4. I see, so convert references to anything from: libraries, frameworks, modules etc with npm tp package as a module!
--->
-
 <html lang="en"> <!-- Sets language to English -->
 <head>
   <meta charset="UTF-8" /> <!-- Setting the characters of the website to the standard ASCII -->
@@ -22,10 +15,17 @@
   <link rel="stylesheet" href="style.css" />
 
   <!-- run locally -->
-  <script src="node_modules/d3/dist/d3.min.js"></script>=
+  <script src="node_modules/d3/dist/d3.min.js"></script>
+  <!-- <script src="states-albers-10m.json"></script>
+  <script src="us.json"></script> -->
+  <script src="https://d3js.org/topojson.v3.min.js"></script>
+
+  <!-- <script src="https://d3js.org/d3.v4.js"></script> -->
+
   <!-- run through web -->
   <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
-  <script src="app.js"> defer</script>
+
+  <script src="app.js"></script>
 </head>
 <body>
   <header>
@@ -73,7 +73,8 @@
     </div>
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <div class="visualisation-item"></div>
+        <div id="my_dataviz"></div>
+        <!-- <svg class="visualisation-item"></svg> -->
         <!-- <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
         <div class="carousel-caption d-none d-md-block">
           <h5>Visualisation 1: Spike Map</h5>
@@ -109,6 +110,5 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <script src="app.js"></script>
 </body>
 </html>
