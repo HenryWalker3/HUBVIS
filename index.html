@@ -16,11 +16,9 @@
 
   <!-- run locally -->
   <script src="node_modules/d3/dist/d3.min.js"></script>
-  <!-- <script src="states-albers-10m.json"></script>
-  <script src="us.json"></script> -->
   <script src="https://d3js.org/topojson.v3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
 
-  <!-- <script src="https://d3js.org/d3.v4.js"></script> -->
 
   <!-- run through web -->
   <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
@@ -71,31 +69,34 @@
       <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
       <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
     </div>
+
     <div class="carousel-inner">
       <div class="carousel-item active">
         <div id="my_dataviz"></div>
-        <!-- <svg class="visualisation-item"></svg> -->
-        <!-- <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Visualisation 1: Spike Map</h5>
-          <p>Spike Map of superannuation value by postcode Australia.</p>
-        </div> -->
-      </div>
-      <div class="carousel-item">
-        <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Visualisation 2: Spike Map</h5>
-          <p>Spike Map of superannuation investment type by postcode Australia.</p>
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Visualisation 1: Zoom Map</h5>
+            <p>Spike Map of superannuation value by postcode Australia.</p>
+          </div>
         </div>
-      </div>
-      <div class="carousel-item">
-        <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Third slide label</h5>
-          <p>Some representative placeholder content for the third slide.</p>
+
+        <div class="carousel-item">
+          <svg class="visualisation-item"></svg>
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Visualisation 2: Asset Race</h5>
+              <p>Bubble Map of superannuation investment type by postcode Australia.</p>
+            </div>
         </div>
-      </div>
+
+        <div class="carousel-item">
+          <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Third slide label</h5>
+              <p>Some representative placeholder content for the third slide.</p>
+            </div>
+        </div>
     </div>
+
+
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Previous</span>
