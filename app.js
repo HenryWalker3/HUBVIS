@@ -1,11 +1,9 @@
 const width = 1200;
 const height = 600;
 
-
-
 // **************************** AUS Zoom Map VISUALISAITON 2 ******************************************
 // Carosel Visualisation_2
-function zoomAUSMapVisualisation(aus) {
+function createAUSMapVisualisation(aus) {
   // Define projection
   const projection = d3.geoMercator()
                        .fitSize([width, height], aus);
@@ -48,6 +46,7 @@ function zoomAUSMapVisualisation(aus) {
       .attr("stroke", "white")
       .attr("stroke-linejoin", "round");
   });
+
   // Attach zoom behavior
   svg.call(zoom);
 
@@ -86,8 +85,8 @@ function zoomAUSMapVisualisation(aus) {
   }
 }
 
-// **************************** Bubble Map Interactive VISUALISAITON 1 ******************************************
-function bubbleMapVisualisation(states, postcodes, vis_data) {
+// **************************** U.S. Bubble Map Interactive VISUALISAITON 1 ******************************************
+function bubbleMapVisualisationUS(usStates, usCounties, population) {
   // Construct a path generator.
   const path = d3.geoPath();
 
@@ -109,16 +108,16 @@ function bubbleMapVisualisation(states, postcodes, vis_data) {
 
   // Draw the states.
   g.selectAll("path")
-    .data(topojson.feature(states, states.objects.states).features)
+    .data(topojson.feature(usStates, usStates.objects.states).features)
     .join("path")
     .attr("d", path)
     .attr("fill", "#444")
     .attr("stroke", "white");
 
   // Construct the radius scale for the bubbles.
-  const radius = d3.scaleSqrt([0, d3.max(vis_data, d => d.population)], [0, 40]);
-  const countymap = new Map(topojson.feature(postcodes, postcodes.objects.counties).features.map(d => [d.id, d]));
-  const data = vis_data.map(d => ({
+  const radius = d3.scaleSqrt([0, d3.max(population, d => d.population)], [0, 40]);
+  const countymap = new Map(topojson.feature(usCounties, usCounties.objects.counties).features.map(d => [d.id, d]));
+  const data = population.map(d => ({
     ...d,
     county: countymap.get(d.fips)
   })).filter(d => d.county);
@@ -147,7 +146,7 @@ function bubbleMapVisualisation(states, postcodes, vis_data) {
 
 // **************************** U.S. Zoom Map VISUALISAITON 2 ******************************************
 // Carosel Visualisation_2
-function zoomUSMapVisualisation(us) {
+function createUSMapVisualisation(us) {
   // Define zoom behavior
   const zoom = d3.zoom()
     .scaleExtent([1, 8])
@@ -216,12 +215,13 @@ function zoomUSMapVisualisation(us) {
 
 // **************************** Retriving data for ALL VISUALISATIONS ******************************************
 Promise.all([
-  fetch('/AUS_JSON_Files/australian-states.json').then(response => response.json()),
   fetch('/US_JSON_Files/states-albers-10m.json').then(response => response.json()),
   fetch('/US_JSON_Files/counties-albers-10m.json').then(response => response.json()),
-  fetch('/US_JSON_Files/population.json').then(response => response.json())
+  fetch('/US_JSON_Files/population.json').then(response => response.json()),
+  fetch('/AUS_JSON_Files/au-states-topo.json').then(response => response.json()),
+  fetch('/AUS_JSON_Files/au-states-geo.json').then(response => response.json())
 ])
-.then(([ausStates, usStates, usCounties, rawPopulationData]) => {
+.then(([usStates, usCounties, rawPopulationData, ausTopoStates, ausGeoStates]) => {
   const population = rawPopulationData
     .slice(1) // Remove the header line if present
     .map(([p, state, county]) => ({
@@ -229,10 +229,10 @@ Promise.all([
       fips: `${state}${county}`,
       population: +p
     }));
-  zoomAUSMapVisualisation(ausStates);
-  bubbleMapVisualisation(usStates, usCounties, population);
-  zoomUSMapVisualisation(usStates);
-  // createBubbleMap(usCounties, population);
+  createAUSMapVisualisation(ausGeoStates);
+  // bubbleMapVisualisationAUS(ausTopoStates, population);
+  bubbleMapVisualisationUS(usStates, usCounties, population);
+  createUSMapVisualisation(usStates);
 })
 .catch(error => {
   console.error('COULDNT GET FILE', error);

@@ -242,11 +242,25 @@ Promise.all([
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // const width = 1200;
 // const height = 600;
-
-// // **************************** U.S. Bubble Map Interactive VISUALISAITON 1 ******************************************
-// function createIntegratedUSMapVisualization(usStates, usCounties, population) {
+// // **************************** AUS Bubble Map Interactive VISUALISAITON 1 ******************************************
+// function bubbleMapVisualisationAUS(states, vis_data) {
 //   // Construct a path generator.
 //   const path = d3.geoPath();
 
@@ -268,16 +282,76 @@ Promise.all([
 
 //   // Draw the states.
 //   g.selectAll("path")
-//     .data(topojson.feature(usStates, usStates.objects.states).features)
+//     .data(topojson.feature(states, states.objects.states).features)
 //     .join("path")
 //     .attr("d", path)
 //     .attr("fill", "#444")
 //     .attr("stroke", "white");
 
 //   // Construct the radius scale for the bubbles.
-//   const radius = d3.scaleSqrt([0, d3.max(population, d => d.population)], [0, 40]);
-//   const countymap = new Map(topojson.feature(usCounties, usCounties.objects.counties).features.map(d => [d.id, d]));
-//   const data = population.map(d => ({
+//   const radius = d3.scaleSqrt([0, d3.max(vis_data, d => d.population)], [0, 40]);
+//   const countymap = new Map(topojson.feature(postcodes, postcodes.objects.counties).features.map(d => [d.id, d]));
+//   const data = vis_data.map(d => ({
+//     ...d,
+//     county: countymap.get(d.fips)
+//   })).filter(d => d.county);
+
+//   g.selectAll("circle")
+//     .data(data)
+//     .join("circle")
+//     .attr("transform", d => `translate(${path.centroid(d.county)})`)
+//     .attr("r", d => radius(d.population))
+//     .attr("fill", "rgb(37, 65, 214)")
+//     .attr("fill-opacity", 0.5)
+//     .attr("stroke", "#fff")
+//     .attr("stroke-opacity", 0.5)
+//     .attr("stroke-width", 0.5)
+//     .append("title")
+//     .text(d => {
+//       const countyName = d.county && d.county.properties ? d.county.properties.name : "Unknown";
+//       const stateName = d.state ? d.state : "Unknown";
+//       return `${countyName}, ${stateName}: ${d3.format(",")(d.population)}`;
+//     });
+//     // Zoom function to transform the group.
+//     function zoomed(event) {
+//       g.attr("transform", event.transform);
+//   }
+// }
+
+
+// // **************************** U.S. Bubble Map Interactive VISUALISAITON 1 ******************************************
+// function bubbleMapVisualisationUS(states, counties, vis_data) {
+//   // Construct a path generator.
+//   const path = d3.geoPath();
+
+//   // Define zoom behavior
+//   const zoom = d3.zoom()
+//     .scaleExtent([1, 8])
+//     .on("zoom", zoomed);
+
+//   // Create the SVG container for the visualization.
+//   const svg = d3.select(".us-visualisation-item")
+//     .attr("width", width)
+//     .attr("height", height)
+//     .attr("viewBox", [0, 0, width, height])
+//     .attr("style", "max-width: 100%; height: auto; margin-left: 50px;")
+//     .call(zoom);
+
+//   // Create a group for the map features and apply the zoom behavior.
+//   const g = svg.append("g");
+
+//   // Draw the states.
+//   g.selectAll("path")
+//     .data(topojson.feature(states, states.objects.states).features)
+//     .join("path")
+//     .attr("d", path)
+//     .attr("fill", "#444")
+//     .attr("stroke", "white");
+
+//   // Construct the radius scale for the bubbles.
+//   const radius = d3.scaleSqrt([0, d3.max(vis_data, d => d.population)], [0, 40]);
+//   const countymap = new Map(topojson.feature(counties, counties.objects.counties).features.map(d => [d.id, d]));
+//   const data = vis_data.map(d => ({
 //     ...d,
 //     county: countymap.get(d.fips)
 //   })).filter(d => d.county);
@@ -306,12 +380,13 @@ Promise.all([
 
 // // **************************** Retriving data for ALL VISUALISATIONS ******************************************
 // Promise.all([
-//   fetch('australian-states.json').then(response => response.json()),
-//   fetch('states-albers-10m.json').then(response => response.json()),
-//   fetch('counties-albers-10m.json').then(response => response.json()),
-//   fetch('population.json').then(response => response.json())
+//   fetch('/US_JSON_Files/states-albers-10m.json').then(response => response.json()),
+//   fetch('/US_JSON_Files/counties-albers-10m.json').then(response => response.json()),
+//   fetch('/US_JSON_Files/population.json').then(response => response.json()),
+//   fetch('/AUS_JSON_Files/au-states-topo.json').then(response => response.json()),
+//   fetch('/AUS_JSON_Files/au-states-geo.json').then(response => response.json())
 // ])
-// .then(([ausStates, usStates, usCounties, rawPopulationData]) => {
+// .then(([usStates, usCounties, rawPopulationData, ausTopoStates, ausGeoStates]) => {
 //   const population = rawPopulationData
 //     .slice(1) // Remove the header line if present
 //     .map(([p, state, county]) => ({
@@ -319,12 +394,10 @@ Promise.all([
 //       fips: `${state}${county}`,
 //       population: +p
 //     }));
-//   // createAUSMapVisualisation(ausStates);
-//   // createIntegratedAUSMapVisualization(usStates, usCounties, population);
-//   createIntegratedUSMapVisualization(usStates, usCounties, population);
-//   // createUSMapVisualisation(usStates);
-
+//   bubbleMapVisualisationUS(usStates, usCounties, population);
+//   bubbleMapVisualisationAUS(ausTopoStates, population);
 // })
 // .catch(error => {
 //   console.error('COULDNT GET FILE', error);
 // });
+
