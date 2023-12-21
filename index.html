@@ -57,52 +57,95 @@
       </div>
     </div>
   </nav>
-  <p>HUB24: Data Visualisation project - HUBVIS </p>
   <main>
-    <section></section>
-    <section></section>
-    <section></section>
-  </main>
-  <div id="carouselExampleCaptions" class="carousel slide">
-    <div class="carousel-indicators">
-      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-    </div>
-
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <svg class="visualisation-item"></svg>
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Visualisation 1: Bubble Map</h5>
-          <p>Bubble Map of superannuation investment type by postcode Australia.</p>
+    <!-- carousel 1: Australian data -->
+    <section> 
+      <p>HUB24: Australian Visualisations</p>
+      <div id="carouselExampleCaptionsAUS" class="carousel slide">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
-      </div>
-      <div class="carousel-item">
-        <div id="my_dataviz"></div>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Visualisation 2: Zoom Map</h5>
-            <p>Zoom Map of superannuation value by state Australia.</p>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <svg class="aus-visualisation-item"></svg>
             <div class="carousel-caption d-none d-md-block">
-              <h5>Third slide label</h5>
-              <p>Some representative placeholder content for the third slide.</p>
+              <h5>Visualisation 1: Bubble Map</h5>
+              <p>Bubble Map of superannuation investment type by postcode Australia.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div id="aus_dataviz"></div>
+              <div class="carousel-caption d-none d-md-block">
+                <h5>Visualisation 2: Zoom Map</h5>
+                <p>Zoom Map of Australia by state.</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Third slide label</h5>
+                  <p>Some representative placeholder content for the third slide.</p>
+                </div>
             </div>
         </div>
-    </div>
-
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
+    
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptionsAUS" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptionsAUS" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </section>
+    <!-- carousel 2: US data -->
+    <section>
+      <p>HUB24: U.S. Visualisations</p>
+      <div id="carouselExampleCaptionsUS" class="carousel slide">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <svg class="us-visualisation-item"></svg>
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Visualisation 1: Bubble Map</h5>
+              <p>Bubble Map of population by U.S. County.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div id="us_dataviz"></div>
+              <div class="carousel-caption d-none d-md-block">
+                <h5>Visualisation 2: Zoom Map</h5>
+                <p>Zoom Map of U.S. County.</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Third slide label</h5>
+                  <p>Some representative placeholder content for the third slide.</p>
+                </div>
+            </div>
+        </div>
+    
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptionsUS" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptionsUS" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </section>
+    <section></section>
+  </main>
   <footer>
     <small>© <script>document.write(new Date().getFullYear())</script> HUB24. All Rights Reserved.</small>
   </footer>
