@@ -49,25 +49,26 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, population) 
   })).filter(d => d.county);
 
 
-    // Draw the suburbs/postcodes
-    g.selectAll("path.suburb")
-    .data(topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects.state).features) // Adjust 'state' key if necessary
+
+  // Draw the suburbs/postcodes for all states
+  g.selectAll("path.suburb")
+    .data(allSuburbs)
     .join("path")
     .attr("class", "suburb")
     .attr("d", path)
-    .attr("fill", "none") // or set a fill color if needed
+    .attr("fill", "none")
     .attr("stroke", "#666")
     .attr("stroke-width", .005);
 
-  // Optionally, add labels to each suburb/postcode
+  // Optionally, add labels to each suburb/postcode for all states
   g.selectAll("text.suburb-label")
-    .data(topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects.state).features) // Adjust 'state' key if necessary
+    .data(allSuburbs)
     .join("text")
     .attr("class", "suburb-label")
     .attr("transform", d => `translate(${path.centroid(d)})`)
     .attr("text-anchor", "middle")
-    .text(d => d.properties.name) // Adjust to match the property name in your data
-    .attr("font-size", "2px") // Adjust font size as needed
+    .text(d => d.properties.name)
+    .attr("font-size", "2px")
     .attr("fill", "black");
 
 
