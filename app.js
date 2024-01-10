@@ -1,13 +1,13 @@
 const width = 1200;
 const height = 600;
 
-
-
 // **************************** AUS Bubble Map Interactive VISUALISAITON 1 ******************************************
-function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, population) {
+function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
+  // 00006165195343270469
+
   // Define the Mercator projection tailored for Australia
   const projection = d3.geoMercator()
-                       .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
+  .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
 
   // Construct a path generator with the defined projection.
   const path = d3.geoPath().projection(projection);
@@ -35,20 +35,52 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, population) 
     .attr("d", path)
     .attr("fill", "#444")
     .attr("stroke", "white")
-    .attr("stroke-width", .01);
+    .attr("stroke-width", .1);
 
   // Construct the radius scale for the bubbles.
-  const radius = d3.scaleSqrt([0, d3.max(population, d => d.population)], [0, 40]);
-  // // search line 4061778         "scale": [
-  //           0.00007249098348459118,
-  //           0.00006165195343270469
-  const countymap = new Map(topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects.state).features.map(d => [d.id, d]));
-  const data = population.map(d => ({
-    ...d,
-    county: countymap.get(d.fips)
-  })).filter(d => d.county);
+  const radius = d3.scaleSqrt()
+  .domain([0, d3.max(evanData, d => d.value)]) // Use d.value to access the numeric value
+  .range([0, 40]);
 
+  // Assuming ausTopoPostCodes has separate keys for each state like state1, state2, etc.
+  const allStatesKeys = Array.from({ length: 8 }, (_, i) => `state${i + 1}`);
 
+  // Collecting all suburbs from each state
+  const allSuburbs = allStatesKeys.flatMap(key => topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects[key]).features);
+
+  // Map suburb names to their geographic features
+  const suburbMap = new Map();
+  allSuburbs.forEach(geo => {
+    suburbMap.set(geo.properties.name, geo);
+  });
+
+  // Match Evan data with the geographic features
+  const evanDataWithGeo = evanData.map(d => {
+    const geoFeature = suburbMap.get(d.suburbName); // Make sure d.suburbName is correct
+    return {
+      value: d.value,
+      geoFeature: geoFeature
+    };
+  }).filter(d => d.geoFeature); // Filter out entries without a matching feature
+
+  // Draw circles for each data point
+  const circles = g.selectAll("circle")
+    .data(evanDataWithGeo)
+    .join("circle")
+    .attr("transform", d => {
+      const centroid = path.centroid(d.geoFeature);
+      return `translate(${centroid})`;
+    })
+    .attr("r", d => {
+      const radiusSize = radius(d.value);
+      return radiusSize;
+    })
+    .attr("fill", "rgb(37, 65, 214)")
+    .attr("fill-opacity", 0.5)
+    .attr("stroke", "#fff")
+    .attr("stroke-opacity", 0.5)
+    .attr("stroke-width", 0.5)
+    .append("suburbName");
 
   // Draw the suburbs/postcodes for all states
   g.selectAll("path.suburb")
@@ -57,76 +89,61 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, population) 
     .attr("class", "suburb")
     .attr("d", path)
     .attr("fill", "none")
-    .attr("stroke", "#666")
-    .attr("stroke-width", .005);
+    .attr("stroke", "white")
+    .attr("stroke-width", .5);
 
   // Optionally, add labels to each suburb/postcode for all states
-  g.selectAll("text.suburb-label")
-    .data(allSuburbs)
-    .join("text")
-    .attr("class", "suburb-label")
-    .attr("transform", d => `translate(${path.centroid(d)})`)
-    .attr("text-anchor", "middle")
-    .text(d => d.properties.name)
-    .attr("font-size", "2px")
-    .attr("fill", "black");
+  // g.selectAll("text.suburb-label")
+  //   .data(allSuburbs)
+  //   .join("text")
+  //   .attr("class", "suburb-label")
+  //   .attr("transform", d => `translate(${path.centroid(d)})`)
+  //   .attr("text-anchor", "middle")
+  //   .text(d => d.properties.name)
+  //   .attr("font-size", "1px")
+  //   .attr("fill", "white");
 
+  // Zoom function to transform the group.
+  function zoomed(event) {
+    const transform = event.transform;
+    g.attr("transform", transform);
 
-
-  g.selectAll("circle")
-    .data(data)
-    .join("circle")
-    .attr("transform", d => `translate(${path.centroid(d.county)})`)
-    .attr("r", d => radius(d.population))
-    .attr("fill", "rgb(37, 65, 214)")
-    .attr("fill-opacity", 0.5)
-    .attr("stroke", "#fff")
-    .attr("stroke-opacity", 0.5)
-    .attr("stroke-width", 0.5)
-    .append("title")
-    .text(d => {
-      const countyName = d.county && d.county.properties ? d.county.properties.name : "Unknown";
-      const stateName = d.state ? d.state : "Unknown";
-      return `${countyName}, ${stateName}: ${d3.format(",")(d.population)}`;
-    });
-    // Zoom function to transform the group.
-    function zoomed(event) {
-      g.attr("transform", event.transform);
+    // Adjust stroke width based on zoom scale
+    g.selectAll("path.suburb")
+      .attr("stroke-width", 0.1 / transform.k); // Adjust the divisor as needed
   }
 }
 
 // **************************** AUS Zoom Map VISUALISAITON 2 ******************************************
-// Carosel Visualisation_2
 function createAUSMapVisualisation(aus) {
-  // Define projection
   const projection = d3.geoMercator()
-                       .fitSize([width, height], aus);
+  .fitSize([width, height], aus);
 
   const path = d3.geoPath().projection(projection);
 
   // Define zoom behavior
   const zoom = d3.zoom()
-                 .scaleExtent([1, 8])
-                 .on("zoom", zoomed);
+  .scaleExtent([1, 8])
+  .on("zoom", zoomed);
 
   // Create SVG
   const svg = d3.create("svg")
-                 .attr("viewBox", [0, 0, width, height])
-                 .attr("width", width)
-                 .attr("height", height)
-                 .attr("style", "max-width: 100%; height: auto;")
-                 .on("click", reset);
+  .attr("viewBox", [0, 0, width, height])
+  .attr("width", width)
+  .attr("height", height)
+  .attr("style", "max-width: 100%; height: auto;")
+  .on("click", reset);
 
   // Append groups for states
   const g = svg.append("g");
   const states = g.append("g")
-                   .attr("fill", "#444")  // Matching fill color
-                   .attr("cursor", "pointer")
-                   .selectAll("path")
-                   .data(aus.features) 
-                   .join("path")
-                   .on("click", clicked)
-                   .attr("d", path);
+  .attr("fill", "#444")  // Matching fill color
+  .attr("cursor", "pointer")
+  .selectAll("path")
+  .data(aus.features) 
+  .join("path")
+  .on("click", clicked)
+  .attr("d", path);
 
   // Set titles for hovering
   states.append("title")
@@ -181,7 +198,6 @@ function createAUSMapVisualisation(aus) {
 
 // **************************** U.S. Bubble Map Interactive VISUALISAITON 1 ******************************************
 function bubbleMapVisualisationUS(usStates, usCounties, population) {
-  // Construct a path generator.
   const path = d3.geoPath();
 
   // Define zoom behavior
@@ -239,7 +255,6 @@ function bubbleMapVisualisationUS(usStates, usCounties, population) {
 }
 
 // **************************** U.S. Zoom Map VISUALISAITON 2 ******************************************
-// Carosel Visualisation_2
 function createUSMapVisualisation(us) {
   // Define zoom behavior
   const zoom = d3.zoom()
@@ -314,22 +329,31 @@ Promise.all([
   fetch('/US_JSON_Files/population.json').then(response => response.json()),
   fetch('/AUS_JSON_Files/suburb-10.json').then(response => response.json()),
   fetch('/AUS_JSON_Files/au-states-geo.json').then(response => response.json()),
-  fetch('/AUS_JSON_Files/au-states-topo.json').then(response => response.json())
+  fetch('/AUS_JSON_Files/au-states-topo.json').then(response => response.json()),
+  d3.csv('/AUS_JSON_Files/evan_data.csv')
 ])
-.then(([usStates, usCounties, rawPopulationData, ausTopoSuburbs, ausGeoStates, ausTopoStates]) => {
+.then(([usStates, usCounties, rawPopulationData, ausTopoSuburbs, ausGeoStates, ausTopoStates, rawEvanData]) => {
   const population = rawPopulationData
-    .slice(1) // Remove the header line if present
+    .slice(1) // If there's a header
     .map(([p, state, county]) => ({
       state,
       fips: `${state}${county}`,
       population: +p
-    }));
+  }));
+
+  // Processing Evan data from CSV
+  const evanData = rawEvanData.map(d => {
+    return {
+      suburbName: d.suburbName.trim(),
+      value: +d.value
+    };
+  });
+
   createAUSMapVisualisation(ausGeoStates);
-  bubbleMapVisualisationAUS(ausTopoStates, ausTopoSuburbs, population);
+  bubbleMapVisualisationAUS(ausTopoStates, ausTopoSuburbs, evanData);
   bubbleMapVisualisationUS(usStates, usCounties, population);
   createUSMapVisualisation(usStates);
 })
 .catch(error => {
-  console.error('COULDNT GET FILE', error);
+  console.error('Could not load data', error);
 });
-
