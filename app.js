@@ -1,3 +1,21 @@
+document.addEventListener('DOMContentLoaded', function() {
+  var navbarSideCollapse = document.getElementById('navbarSideCollapse');
+  var navbarSideMenu = document.getElementById('navbarSideMenu');
+  var overlay = document.querySelector('.overlay');
+
+  navbarSideCollapse.addEventListener('click', function () {
+    navbarSideMenu.style.left = '0'; // Show side menu
+    navbarSideMenu.classList.add('open'); // Add open class
+    overlay.style.display = 'block'; // Show overlay
+  });
+
+  overlay.addEventListener('click', function () {
+    navbarSideMenu.style.left = '-250px'; // Hide side menu
+    navbarSideMenu.classList.remove('open'); // Remove open class
+    overlay.style.display = 'none'; // Hide overlay
+  });
+});
+
 const width = 1200;
 const height = 600;
 
@@ -5,6 +23,7 @@ const height = 600;
 function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
   // 00006165195343270469
 
+  
   // Define the Mercator projection tailored for Australia
   const projection = d3.geoMercator()
   .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
@@ -349,8 +368,8 @@ Promise.all([
     };
   });
 
-  createAUSMapVisualisation(ausGeoStates);
   bubbleMapVisualisationAUS(ausTopoStates, ausTopoSuburbs, evanData);
+  createAUSMapVisualisation(ausGeoStates);
   bubbleMapVisualisationUS(usStates, usCounties, population);
   createUSMapVisualisation(usStates);
 })
