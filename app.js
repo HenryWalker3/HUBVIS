@@ -83,14 +83,14 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     .append("suburbName");
 
   // Draw the suburbs/postcodes for all states
-  g.selectAll("path.suburb")
-    .data(allSuburbs)
-    .join("path")
-    .attr("class", "suburb")
-    .attr("d", path)
-    .attr("fill", "none")
-    .attr("stroke", "white")
-    .attr("stroke-width", .5);
+  // g.selectAll("path.suburb")
+  //   .data(allSuburbs)
+  //   .join("path")
+  //   .attr("class", "suburb")
+  //   .attr("d", path)
+  //   .attr("fill", "none")
+  //   .attr("stroke", "white")
+  //   .attr("stroke-width", .5);
 
   // Optionally, add labels to each suburb/postcode for all states
   // g.selectAll("text.suburb-label")
