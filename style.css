@@ -1,3 +1,7 @@
+/* Importing Montserrat font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+
 video {
   margin: 0;
   padding: 0;
@@ -254,8 +258,6 @@ main {
 
 
 
-/* Importing Montserrat font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 
 /* Header Styling */
 header {
@@ -294,7 +296,7 @@ header p {
 }
 
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+
 
 /* Styling for the section titles */
 section p.header {
