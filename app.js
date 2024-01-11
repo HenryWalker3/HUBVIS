@@ -1,3 +1,6 @@
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
   loadData();
 
@@ -18,18 +21,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
-
 const width = 1200;
 const height = 600;
 
-
-
 // **************************** MAIN VISUALISATION  ******************************************
-function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
+function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
   // 00006165195343270469
+  const height = 800;
 
-  
   // Define the Mercator projection tailored for Australia
   const projection = d3.geoMercator()
   .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
@@ -89,7 +88,7 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
   }).filter(d => d.geoFeature); // Filter out entries without a matching feature
 
   // Draw circles for each data point
-  const circles = g.selectAll("circle")
+  g.selectAll("circle")
     .data(evanDataWithGeo)
     .join("circle")
     .attr("transform", d => {
@@ -108,36 +107,87 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     .append("suburbName");
 
   // Draw the suburbs/postcodes for all states
-  // g.selectAll("path.suburb")
-  //   .data(allSuburbs)
-  //   .join("path")
-  //   .attr("class", "suburb")
-  //   .attr("d", path)
-  //   .attr("fill", "none")
-  //   .attr("stroke", "white")
-  //   .attr("stroke-width", .5);
+  g.selectAll("path.suburb")
+    .data(allSuburbs)
+    .join("path")
+    .attr("class", "suburb")
+    .attr("d", path)
+    .attr("fill", "none")
+    .attr("stroke", "white")
+    .attr("stroke-width", .5);
 
   // Optionally, add labels to each suburb/postcode for all states
   // g.selectAll("text.suburb-label")
-  //   .data(allSuburbs)
-  //   .join("text")
-  //   .attr("class", "suburb-label")
-  //   .attr("transform", d => `translate(${path.centroid(d)})`)
-  //   .attr("text-anchor", "middle")
-  //   .text(d => d.properties.name)
-  //   .attr("font-size", "1px")
-  //   .attr("fill", "white");
+    // .data(allSuburbs)
+    // .join("text")
+    // .attr("class", "suburb-label")
+    // .attr("transform", d => `translate(${path.centroid(d)})`)
+    // .attr("text-anchor", "middle")
+    // .text(d => d.properties.name)
+    // .attr("font-size", "1px")
+    // .attr("fill", "white");
 
   // Zoom function to transform the group.
+  const suburbPaths = g.selectAll("path.suburb")
+    .data(allSuburbs)
+    .join("path")
+    .attr("class", "suburb")
+    .attr("d", path)
+    .attr("fill", "none")
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5)
+    .style("display", "none"); // Initially hide the suburb paths
+
+
+  const suburbZoomThreshold = 15; // Adjust this value as needed
   function zoomed(event) {
     const transform = event.transform;
     g.attr("transform", transform);
 
-    // Adjust stroke width based on zoom scale
-    g.selectAll("path.suburb")
-      .attr("stroke-width", 0.1 / transform.k); // Adjust the divisor as needed
+      // Check the state of the toggle
+      const isSuburbVisible = document.getElementById("suburbToggle").checked;
+
+    // Control visibility and opacity of suburb paths based on zoom level
+    const suburbFadeStartZoom = 10; // Zoom level at which suburb paths start fading in
+
+    if (isSuburbVisible) {
+      const opacityScale = d3.scaleLinear()
+      .domain([suburbFadeStartZoom, suburbZoomThreshold])
+      .range([0, 1])
+      .clamp(true);
+      const suburbOpacity = opacityScale(transform.k);
+      suburbPaths.style("opacity", suburbOpacity)
+      .style("display", suburbOpacity > 0 ? null : "none");
+      
+      // Adjust stroke width of suburb paths and circle radius and stroke width
+      g.selectAll("path.suburb")
+          .attr("stroke-width", 0.1 / transform.k);
+      }
+
+    // Adjust text size and opacity based on zoom level
+    const zoomScale = transform.k;
+    const maxZoomScale = 5;
+    const captionOpacity = Math.max(0, 1 - Math.pow(zoomScale / maxZoomScale, 2));
+    d3.select("#caption-title").style("opacity", captionOpacity);
+    d3.select("#caption-text").style("opacity", captionOpacity);
+
+    const newRadiusScale = radius.copy().range([0, 40 / transform.k]);
+    g.selectAll("circle")
+        .attr("r", d => newRadiusScale(d.value))
+        .attr("stroke-width", 0.5 / transform.k);
+
   }
+    // Event listener for the toggle switch
+  document.getElementById("suburbToggle").addEventListener("change", function() {
+    // Reapply the zoom function to update the map based on the new toggle state
+    zoomed({ transform: d3.zoomTransform(svg.node()) });
+  });
 }
+
+
+
+
+
 
 
 
@@ -161,7 +211,7 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     .on("zoom", zoomed);
 
   // Create the SVG container for the visualization.
-  const svg = d3.select(".aus-visualisation-item")
+  const svg = d3.select(".aus-visualisation-item2")
     .attr("width", width)
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height])
@@ -207,7 +257,7 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
   }).filter(d => d.geoFeature); // Filter out entries without a matching feature
 
   // Draw circles for each data point
-  const circles = g.selectAll("circle")
+  g.selectAll("circle")
     .data(evanDataWithGeo)
     .join("circle")
     .attr("transform", d => {
@@ -225,14 +275,11 @@ function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     .attr("stroke-width", 0.5)
     .append("suburbName");
 
+
   // Zoom function to transform the group.
   function zoomed(event) {
     const transform = event.transform;
     g.attr("transform", transform);
-
-    // Adjust stroke width based on zoom scale
-    g.selectAll("path.suburb")
-      .attr("stroke-width", 0.1 / transform.k); // Adjust the divisor as needed
   }
 }
 
@@ -472,6 +519,9 @@ function loadData() {
       };
     });
     if (document.querySelector('.aus-visualisation-item')) {
+      mapVisualisationAUS(ausTopoStates, ausTopoSuburbs, evanData);
+    }
+    if (document.querySelector('.aus-visualisation-item2')) {
       bubbleMapVisualisationAUS(ausTopoStates, ausTopoSuburbs, evanData);
     }
     if (document.getElementById('aus_dataviz')) {
@@ -486,3 +536,4 @@ function loadData() {
     console.error('Could not load data', error);
   });
 }
+

@@ -51,16 +51,22 @@
     </ul>
   </div>
   <main>
-    <p>Welcome to the main landing page.</p>
+    <!-- <p>Welcome to the main landing page.</p> -->
 
      <!-- Single Carousel Item for Australian Visualisations -->
      <div id="carouselExampleCaptionsAUS" class="carousel slide">
       <div class="carousel-inner">
         <div class="carousel-item active">
+          <div class="map-toggle">
+            <label class="switch">
+                <input type="checkbox" id="suburbToggle" unchecked>
+                <span class="slider round"></span>
+            </label>
+        </div>
           <svg class="aus-visualisation-item"></svg>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Visualisation 1: Bubble Map</h5>
-            <p>Bubble Map of superannuation investment type by postcode Australia.</p>
+          <div class="carousel-caption d-none d-md-block" id="map-caption">
+            <h5 id="caption-title">Visualisation 1: Bubble Map</h5>
+            <p id="caption-text">Bubble Map of superannuation investment type by postcode Australia.</p>
           </div>
         </div>
       </div>
