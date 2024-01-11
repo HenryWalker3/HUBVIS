@@ -117,15 +117,16 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     .attr("stroke-width", .5);
 
   // Optionally, add labels to each suburb/postcode for all states
-  // g.selectAll("text.suburb-label")
-    // .data(allSuburbs)
-    // .join("text")
-    // .attr("class", "suburb-label")
-    // .attr("transform", d => `translate(${path.centroid(d)})`)
-    // .attr("text-anchor", "middle")
-    // .text(d => d.properties.name)
-    // .attr("font-size", "1px")
-    // .attr("fill", "white");
+  const suburbLabels = g.selectAll("text.suburb-label")
+    .data(allSuburbs)
+    .join("text")
+    .attr("class", "suburb-label")
+    .attr("transform", d => `translate(${path.centroid(d)})`)
+    .attr("text-anchor", "middle")
+    .text(d => d.properties.name)
+    .attr("font-size", ".1px")
+    .attr("fill", "white")
+    .style("opacity", 0); // Initially set to fully transparent
 
   // Zoom function to transform the group.
   const suburbPaths = g.selectAll("path.suburb")
@@ -144,11 +145,20 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     const transform = event.transform;
     g.attr("transform", transform);
 
-      // Check the state of the toggle
-      const isSuburbVisible = document.getElementById("suburbToggle").checked;
-
-    // Control visibility and opacity of suburb paths based on zoom level
+    // Check the state of the toggle
+    const isSuburbVisible = document.getElementById("suburbToggle").checked;
     const suburbFadeStartZoom = 10; // Zoom level at which suburb paths start fading in
+    
+    // Check the state of the nametag toggle
+    const isNametagVisible = document.getElementById("nametagToggle").checked;
+    if (isNametagVisible) {
+      const nametagOpacityScale = d3.scaleLinear()
+        .domain([10, 15]) // Adjust these values as needed
+        .range([0, 1])
+        .clamp(true);
+      const nametagOpacity = nametagOpacityScale(transform.k);
+      suburbLabels.style("opacity", nametagOpacity);
+    }
 
     if (isSuburbVisible) {
       const opacityScale = d3.scaleLinear()
@@ -180,6 +190,10 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     // Event listener for the toggle switch
   document.getElementById("suburbToggle").addEventListener("change", function() {
     // Reapply the zoom function to update the map based on the new toggle state
+    zoomed({ transform: d3.zoomTransform(svg.node()) });
+  });
+
+  document.getElementById("nametagToggle").addEventListener("change", function() {
     zoomed({ transform: d3.zoomTransform(svg.node()) });
   });
 }
