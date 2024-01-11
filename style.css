@@ -334,7 +334,7 @@ section p.header {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: rgb(43, 43, 43);
     -webkit-transition: .4s;
     transition: .4s;
 }
@@ -372,4 +372,32 @@ input:checked + .slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+.key-box {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgb(36, 36, 36); /* Light gray background */
+  padding: 10px; /* Padding around the contents */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+.map-toggle-container {
+  text-align: left;
+}
+
+.map-toggle {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.toggle-description {
+  display: inline-block;
+  vertical-align: middle;
+  color: grey;
+  font-size: 14px;
+  margin-top: 40px;
+  margin-left: 5px; /* Space between the toggle and the text */
 }
