@@ -401,3 +401,4 @@ input:checked + .slider:before {
   margin-top: 40px;
   margin-left: 5px; /* Space between the toggle and the text */
 }
+

@@ -2,7 +2,23 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
-  loadData();
+    loadData().then(() => {
+      document.querySelectorAll("input[name='dataset']").forEach(input => {
+        input.addEventListener('change', function() {
+            let selectedData;
+            if (this.value === 'evan') {
+                selectedData = evanData;
+            } else if (this.value === 'tony') {
+                selectedData = tonyData;
+            } else if (this.value === 'ruixing') {
+                selectedData = ruixingData;
+            }
+            mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData);
+        });
+    });
+  }).catch(error => {
+      console.error('Error in data loading or event listeners setup:', error);
+  });
 
   var navbarSideCollapse = document.getElementById('navbarSideCollapse');
   var navbarSideMenu = document.getElementById('navbarSideMenu');
@@ -24,8 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
 const width = 1200;
 const height = 600;
 
+let evanData, tonyData, ruixingData;
+let ausTopoStates, ausTopoSuburbs, ausGeoStates, ausTopoPostCodes; // Declare ausTopoPostCodes here
+
+
+
 // **************************** MAIN VISUALISATION  ******************************************
-function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
+function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData) {
   // 00006165195343270469
   const height = 800;
 
@@ -50,7 +71,7 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     .call(zoom);
 
   // Create a group for the map features and apply the zoom behavior.
-  const g = svg.append("g");
+  const g = svg.select("g").empty() ? svg.append("g") : svg.select("g");
 
   // Draw the states using the updated path generator.
   g.selectAll("path")
@@ -63,8 +84,8 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
 
   // Construct the radius scale for the bubbles.
   const radius = d3.scaleSqrt()
-  .domain([0, d3.max(evanData, d => d.value)]) // Use d.value to access the numeric value
-  .range([0, 40]);
+  .domain([0, d3.max(selectedData, d => d.value)]) // Use d.value to access the numeric value
+  .range([0, 30]);
 
   // Assuming ausTopoPostCodes has separate keys for each state like state1, state2, etc.
   const allStatesKeys = Array.from({ length: 8 }, (_, i) => `state${i + 1}`);
@@ -79,7 +100,7 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
   });
 
   // Match Evan data with the geographic features
-  const evanDataWithGeo = evanData.map(d => {
+  const selectedDataWithGeo = selectedData.map(d => {
     const geoFeature = suburbMap.get(d.suburbName); // Make sure d.suburbName is correct
     return {
       value: d.value,
@@ -89,7 +110,7 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
 
   // Draw circles for each data point
   g.selectAll("circle")
-    .data(evanDataWithGeo)
+    .data(selectedDataWithGeo)
     .join("circle")
     .attr("transform", d => {
       const centroid = path.centroid(d.geoFeature);
@@ -100,9 +121,9 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
       return radiusSize;
     })
     .attr("fill", "rgb(37, 65, 214)")
-    .attr("fill-opacity", 0.5)
+    .attr("fill-opacity", 0.3)
     .attr("stroke", "#fff")
-    .attr("stroke-opacity", 0.5)
+    .attr("stroke-opacity", 0.2)
     .attr("stroke-width", 0.5)
     .append("suburbName");
 
@@ -159,7 +180,7 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
     d3.select("#caption-title").style("opacity", captionOpacity);
     d3.select("#caption-text").style("opacity", captionOpacity);
 
-    const newRadiusScale = radius.copy().range([0, 40 / transform.k]);
+    const newRadiusScale = radius.copy().range([0, 30 / transform.k]);
     g.selectAll("circle")
         .attr("r", d => newRadiusScale(d.value))
         .attr("stroke-width", 0.5 / transform.k);
@@ -481,16 +502,18 @@ function createUSMapVisualisation(us) {
 
 // **************************** Retriving data for ALL VISUALISATIONS ******************************************
 function loadData() {
-  Promise.all([
+  return Promise.all([
     fetch('/US_JSON_Files/states-albers-10m.json').then(response => response.json()),
     fetch('/US_JSON_Files/counties-albers-10m.json').then(response => response.json()),
     fetch('/US_JSON_Files/population.json').then(response => response.json()),
     fetch('/AUS_JSON_Files/suburb-10.json').then(response => response.json()),
     fetch('/AUS_JSON_Files/au-states-geo.json').then(response => response.json()),
     fetch('/AUS_JSON_Files/au-states-topo.json').then(response => response.json()),
-    d3.csv('/AUS_JSON_Files/evan_data.csv')
+    d3.csv('/AUS_JSON_Files/evan_data.csv'),
+    d3.csv('/AUS_JSON_Files/evan-tony-data.csv'),
+    d3.csv('/AUS_JSON_Files/ruixing-data.csv'),
   ])
-  .then(([usStates, usCounties, rawPopulationData, ausTopoSuburbs, ausGeoStates, ausTopoStates, rawEvanData]) => {
+  .then(([usStates, usCounties, rawPopulationData, ausTopoSuburbsData, ausGeoStatesData, ausTopoStatesData, rawEvanData, rawTonyData, rawRuixingData]) => {
     const population = rawPopulationData
       .slice(1) // If there's a header
       .map(([p, state, county]) => ({
@@ -498,14 +521,17 @@ function loadData() {
         fips: `${state}${county}`,
         population: +p
     }));
+    ausTopoSuburbs = ausTopoSuburbsData;
+    ausTopoPostCodes = ausTopoSuburbsData;
+    ausGeoStates = ausGeoStatesData;
+    ausTopoStates = ausTopoStatesData;
+
 
     // Processing Evan data from CSV
-    const evanData = rawEvanData.map(d => {
-      return {
-        suburbName: d.suburbName.trim(),
-        value: +d.value
-      };
-    });
+    evanData = processCSVData(rawEvanData);
+    tonyData = processCSVData(rawTonyData);
+    ruixingData = processCSVData(rawRuixingData);
+
     if (document.querySelector('.aus-visualisation-item')) {
       mapVisualisationAUS(ausTopoStates, ausTopoSuburbs, evanData);
     }
@@ -525,3 +551,11 @@ function loadData() {
   });
 }
 
+function processCSVData(rawData) {
+  return rawData.map(d => {
+      return {
+          suburbName: d.suburbName.trim(),
+          value: +d.value
+      };
+  });
+}
