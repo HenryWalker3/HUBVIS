@@ -1,6 +1,4 @@
 
-
-
 document.addEventListener('DOMContentLoaded', function() {
     loadData().then(() => {
       document.querySelectorAll("input[name='dataset']").forEach(input => {
@@ -14,8 +12,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectedData = ruixingData;
             }
             mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData);
-        });
-    });
+        });    
+      });
+      document.querySelectorAll("input[name='visualizationType']").forEach(input => {
+          input.addEventListener('change', function() {
+              // Call mapVisualisationAUS with the current dataset and new visualization type
+              mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, currentSelectedData);
+          });
+      });
   }).catch(error => {
       console.error('Error in data loading or event listeners setup:', error);
   });
@@ -39,168 +43,208 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const width = 1200;
 const height = 600;
-
 let evanData, tonyData, ruixingData;
 let ausTopoStates, ausTopoSuburbs, ausGeoStates, ausTopoPostCodes; // Declare ausTopoPostCodes here
 
-
-
 // **************************** MAIN VISUALISATION  ******************************************
 function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData) {
-  // 00006165195343270469
-  const height = 800;
-
-  // Define the Mercator projection tailored for Australia
-  const projection = d3.geoMercator()
-  .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
-
-  // Construct a path generator with the defined projection.
-  const path = d3.geoPath().projection(projection);
-
-  // Define zoom behavior
-  const zoom = d3.zoom()
-    .scaleExtent([1, 50])
-    .on("zoom", zoomed);
-
-  // Create the SVG container for the visualization.
-  const svg = d3.select(".aus-visualisation-item")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", [0, 0, width, height])
-    .attr("style", "max-width: 100%; height: auto;")
-    .call(zoom);
-
-  // Create a group for the map features and apply the zoom behavior.
-  const g = svg.select("g").empty() ? svg.append("g") : svg.select("g");
-
-  // Draw the states using the updated path generator.
-  g.selectAll("path")
-    .data(topojson.feature(ausTopoStates, ausTopoStates.objects.states).features)
-    .join("path")
-    .attr("d", path)
-    .attr("fill", "#444")
-    .attr("stroke", "white")
-    .attr("stroke-width", .1);
-
-  // Construct the radius scale for the bubbles.
-  const radius = d3.scaleSqrt()
-  .domain([0, d3.max(selectedData, d => d.value)]) // Use d.value to access the numeric value
-  .range([0, 30]);
-
-  // Assuming ausTopoPostCodes has separate keys for each state like state1, state2, etc.
-  const allStatesKeys = Array.from({ length: 8 }, (_, i) => `state${i + 1}`);
-
-  // Collecting all suburbs from each state
-  const allSuburbs = allStatesKeys.flatMap(key => topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects[key]).features);
-
-  // Map suburb names to their geographic features
-  const suburbMap = new Map();
-  allSuburbs.forEach(geo => {
-    suburbMap.set(geo.properties.name, geo);
-  });
-
-  // Match Evan data with the geographic features
-  const selectedDataWithGeo = selectedData.map(d => {
-    const geoFeature = suburbMap.get(d.suburbName); // Make sure d.suburbName is correct
-    return {
-      value: d.value,
-      geoFeature: geoFeature
-    };
-  }).filter(d => d.geoFeature); // Filter out entries without a matching feature
-
-  // Draw circles for each data point
-  g.selectAll("circle")
-    .data(selectedDataWithGeo)
-    .join("circle")
-    .attr("transform", d => {
-      const centroid = path.centroid(d.geoFeature);
-      return `translate(${centroid})`;
-    })
-    .attr("r", d => {
-      const radiusSize = radius(d.value);
-      return radiusSize;
-    })
-    .attr("fill", "rgb(37, 65, 214)")
-    .attr("fill-opacity", 0.3)
-    .attr("stroke", "#fff")
-    .attr("stroke-opacity", 0.2)
-    .attr("stroke-width", 0.5)
-    .append("suburbName");
-
-  // Draw the suburbs/postcodes for all states
-  g.selectAll("path.suburb")
-    .data(allSuburbs)
-    .join("path")
-    .attr("class", "suburb")
-    .attr("d", path)
-    .attr("fill", "none")
-    .attr("stroke", "white")
-    .attr("stroke-width", .5);
-
-  // Zoom function to transform the group.
-  const suburbPaths = g.selectAll("path.suburb")
-    .data(allSuburbs)
-    .join("path")
-    .attr("class", "suburb")
-    .attr("d", path)
-    .attr("fill", "none")
-    .attr("stroke", "white")
-    .attr("stroke-width", 0.5)
-    .style("display", "none"); // Initially hide the suburb paths
-
-  const suburbZoomThreshold = 15; // Adjust this value as needed
-  function zoomed(event) {
-    const transform = event.transform;
-    g.attr("transform", transform);
-
-    // Check the state of the toggle
-    const isSuburbVisible = document.getElementById("suburbToggle").checked;
-
-    // Control visibility and opacity of suburb paths based on zoom level
-    const suburbFadeStartZoom = 10; // Zoom level at which suburb paths start fading in
-
-    if (isSuburbVisible) {
-      const opacityScale = d3.scaleLinear()
-      .domain([suburbFadeStartZoom, suburbZoomThreshold])
-      .range([0, 1])
-      .clamp(true);
-      const suburbOpacity = opacityScale(transform.k);
-      suburbPaths.style("opacity", suburbOpacity)
-      .style("display", suburbOpacity > 0 ? null : "none");
-      
-      // Adjust stroke width of suburb paths and circle radius and stroke width
-      g.selectAll("path.suburb")
-          .attr("stroke-width", 0.1 / transform.k);
-      }
-
-    // Adjust text size and opacity based on zoom level
-    const zoomScale = transform.k;
-    const maxZoomScale = 5;
-    const captionOpacity = Math.max(0, 1 - Math.pow(zoomScale / maxZoomScale, 2));
-    d3.select("#caption-title").style("opacity", captionOpacity);
-    d3.select("#caption-text").style("opacity", captionOpacity);
-
-    const newRadiusScale = radius.copy().range([0, 30 / transform.k]);
-    g.selectAll("circle")
-        .attr("r", d => newRadiusScale(d.value))
-        .attr("stroke-width", 0.5 / transform.k);
-
+  const visualizationType = document.querySelector('input[name="visualizationType"]:checked')?.value;
+  if (!visualizationType) {
+      console.error("Visualization type not found!");
+      return;
   }
-    // Event listener for the toggle switch
-  document.getElementById("suburbToggle").addEventListener("change", function() {
-    // Reapply the zoom function to update the map based on the new toggle state
-    zoomed({ transform: d3.zoomTransform(svg.node()) });
-  });
+
+  if (visualizationType === 'bubble') {
+    // 00006165195343270469
+    const height = 800;
+
+    // Define the Mercator projection tailored for Australia
+    const projection = d3.geoMercator()
+    .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
+
+    // Construct a path generator with the defined projection.
+    const path = d3.geoPath().projection(projection);
+
+    // Define zoom behavior
+    const zoom = d3.zoom()
+      .scaleExtent([1, 50])
+      .on("zoom", zoomed);
+
+    // Create the SVG container for the visualization.
+    const svg = d3.select(".aus-visualisation-item")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .attr("style", "max-width: 100%; height: auto;")
+      .call(zoom);
+
+    // Create a group for the map features and apply the zoom behavior.
+    const g = svg.select("g").empty() ? svg.append("g") : svg.select("g");
+
+    // Draw the states using the updated path generator.
+    g.selectAll("path")
+      .data(topojson.feature(ausTopoStates, ausTopoStates.objects.states).features)
+      .join("path")
+      .attr("d", path)
+      .attr("fill", "#444")
+      .attr("stroke", "white")
+      .attr("stroke-width", .1);
+
+    // Construct the radius scale for the bubbles.
+    const radius = d3.scaleSqrt()
+    .domain([0, d3.max(selectedData, d => d.value)]) // Use d.value to access the numeric value
+    .range([0, 30]);
+
+    // Assuming ausTopoPostCodes has separate keys for each state like state1, state2, etc.
+    const allStatesKeys = Array.from({ length: 8 }, (_, i) => `state${i + 1}`);
+
+    // Collecting all suburbs from each state
+    const allSuburbs = allStatesKeys.flatMap(key => topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects[key]).features);
+
+    // Map suburb names to their geographic features
+    const suburbMap = new Map();
+    allSuburbs.forEach(geo => {
+      suburbMap.set(geo.properties.name, geo);
+    });
+
+    // Match Evan data with the geographic features
+    const selectedDataWithGeo = selectedData.map(d => {
+      const geoFeature = suburbMap.get(d.suburbName); // Make sure d.suburbName is correct
+      return {
+        value: d.value,
+        geoFeature: geoFeature
+      };
+    }).filter(d => d.geoFeature); // Filter out entries without a matching feature
+
+    // Draw circles for each data point
+    g.selectAll("circle")
+      .data(selectedDataWithGeo)
+      .join("circle")
+      .attr("transform", d => {
+        const centroid = path.centroid(d.geoFeature);
+        return `translate(${centroid})`;
+      })
+      .attr("r", d => {
+        const radiusSize = radius(d.value);
+        return radiusSize;
+      })
+      .attr("fill", "rgb(37, 65, 214)")
+      .attr("fill-opacity", 0.3)
+      .attr("stroke", "#fff")
+      .attr("stroke-opacity", 0.2)
+      .attr("stroke-width", 0.5)
+      .append("suburbName");
+
+    // Draw the suburbs/postcodes for all states
+    g.selectAll("path.suburb")
+      .data(allSuburbs)
+      .join("path")
+      .attr("class", "suburb")
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", .5);
+
+    // Zoom function to transform the group.
+    const suburbPaths = g.selectAll("path.suburb")
+      .data(allSuburbs)
+      .join("path")
+      .attr("class", "suburb")
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", 0.5)
+      .style("display", "none"); // Initially hide the suburb paths
+
+    const suburbZoomThreshold = 15; // Adjust this value as needed
+    function zoomed(event) {
+      const transform = event.transform;
+      g.attr("transform", transform);
+
+      // Check the state of the toggle
+      const isSuburbVisible = document.getElementById("suburbToggle").checked;
+
+      // Control visibility and opacity of suburb paths based on zoom level
+      const suburbFadeStartZoom = 10; // Zoom level at which suburb paths start fading in
+
+      if (isSuburbVisible) {
+        const opacityScale = d3.scaleLinear()
+        .domain([suburbFadeStartZoom, suburbZoomThreshold])
+        .range([0, 1])
+        .clamp(true);
+        const suburbOpacity = opacityScale(transform.k);
+        suburbPaths.style("opacity", suburbOpacity)
+        .style("display", suburbOpacity > 0 ? null : "none");
+        
+        // Adjust stroke width of suburb paths and circle radius and stroke width
+        g.selectAll("path.suburb")
+            .attr("stroke-width", 0.1 / transform.k);
+        }
+
+      // Adjust text size and opacity based on zoom level
+      const zoomScale = transform.k;
+      const maxZoomScale = 5;
+      const captionOpacity = Math.max(0, 1 - Math.pow(zoomScale / maxZoomScale, 2));
+      d3.select("#caption-title").style("opacity", captionOpacity);
+      d3.select("#caption-text").style("opacity", captionOpacity);
+
+      const newRadiusScale = radius.copy().range([0, 30 / transform.k]);
+      g.selectAll("circle")
+          .attr("r", d => newRadiusScale(d.value))
+          .attr("stroke-width", 0.5 / transform.k);
+
+    }
+      // Event listener for the toggle switch
+    document.getElementById("suburbToggle").addEventListener("change", function() {
+      // Reapply the zoom function to update the map based on the new toggle state
+      zoomed({ transform: d3.zoomTransform(svg.node()) });
+    });
+  } else if (visualizationType === 'choropleth') {
+    createChoroplethMap(ausTopoStates, ausTopoPostCodes, selectedData);
+  } else {
+      console.error("Invalid visualization type: ", visualizationType);
+  }
 }
 
+function createChoroplethMap(ausTopoStates, ausTopoPostCodes, selectedData) {
+  d3.select(".aus-visualisation-item").selectAll("*").remove();
 
+  const colorScale = d3.scaleQuantize()
+      .domain([0, d3.max(selectedData, d => d.value)])
+      .range(d3.schemeBlues[9]);
 
+  const projection = d3.geoMercator()
+      .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
+  const path = d3.geoPath().projection(projection);
 
+  const svg = d3.select(".aus-visualisation-item")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .attr("style", "max-width: 100%; height: auto;");
 
+  const g = svg.append("g");
 
+  // Create a map for data values using suburb names as they are
+  const dataMap = new Map(selectedData.map(d => [d.suburbName, d.value]));
 
+  Object.keys(ausTopoPostCodes.objects).forEach(key => {
+    const features = topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects[key]).features;
 
-
+    g.selectAll("path")
+      .data(features)
+      .join("path")
+      .attr("d", path)
+      .attr("fill", d => {
+        const value = dataMap.get(d.properties.name);
+        if (value === undefined) {
+          return "#ccc";
+        }
+        return colorScale(value);
+      });
+      // ... remaining path attributes ...
+  });
+}
 
 // **************************** AUS Bubble Map Interactive VISUALISAITON 1 ******************************************
 function bubbleMapVisualisationAUS(ausTopoStates, ausTopoPostCodes, evanData) {
@@ -531,6 +575,8 @@ function loadData() {
     evanData = processCSVData(rawEvanData);
     tonyData = processCSVData(rawTonyData);
     ruixingData = processCSVData(rawRuixingData);
+
+    currentSelectedData = evanData; // Default or based on the selected dataset
 
     if (document.querySelector('.aus-visualisation-item')) {
       mapVisualisationAUS(ausTopoStates, ausTopoSuburbs, evanData);
