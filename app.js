@@ -48,10 +48,11 @@ let ausTopoStates, ausTopoSuburbs, ausGeoStates, ausTopoPostCodes; // Declare au
 
 // **************************** MAIN VISUALISATION  ******************************************
 function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData) {
-  const visualizationType = document.querySelector('input[name="visualizationType"]:checked')?.value;
+  visualizationType = document.querySelector('input[name="visualizationType"]:checked')?.value;
   if (!visualizationType) {
-      console.error("Visualization type not found!");
-      return;
+      visualizationType = 'bubble';
+      // console.error("Visualization type not found!");
+      // return;
   }
 
   if (visualizationType === 'bubble') {

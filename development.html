@@ -78,12 +78,38 @@
               </div>
             </div>
             <div class="carousel-item">
-              <img src="images/blank_1200x600.png" class="d-block w-100" alt="">
-                <div class="carousel-caption d-none d-md-block">
-                  <h5>Third slide label</h5>
-                  <p>Some representative placeholder content for the third slide.</p>
+              <div class="key-box">
+                <div class="map-toggle-container">
+                  <div class="map-toggle">
+                    <label class="switch">
+                      <input type="checkbox" id="suburbToggle" unchecked>
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                  
+                  <span class="toggle-description">Postcodes</span>
+                  <div class="dataset-toggle">
+                    <input type="radio" id="evanData" name="dataset" value="evan" checked>
+                    <label for="evanData">Evan's Data</label><br>
+                    <input type="radio" id="tonyData" name="dataset" value="tony">
+                    <label for="tonyData">Tony's Data</label><br>
+                    <input type="radio" id="ruixingData" name="dataset" value="ruixing">
+                    <label for="ruixingData">Ruixing's Data</label>
+                  </div>
+                  <div class="visualization-toggle">
+                    <input type="radio" id="bubbleMap" name="visualizationType" value="bubble" checked>
+                    <label for="bubbleMap">Bubble Map</label><br>
+                    <input type="radio" id="choroplethMap" name="visualizationType" value="choropleth">
+                    <label for="choroplethMap">Choropleth Map</label>
+                  </div>
                 </div>
-            </div>
+              </div>
+              
+              <svg class="aus-visualisation-item"></svg>
+              <div class="carousel-caption d-none d-md-block" id="map-caption">
+                <h5 id="caption-title">Visualisation 3: Bubble/Heat Map</h5>
+                <p id="caption-text">Incomplete Interactive Heat / Bubble Map.</p>
+              </div>
         </div>
     
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptionsAUS" data-bs-slide="prev">

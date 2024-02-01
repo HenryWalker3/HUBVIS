@@ -402,3 +402,23 @@ input:checked + .slider:before {
   margin-left: 5px; /* Space between the toggle and the text */
 }
 
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px; /* Adjust size as needed */
+  height: 20px; /* Adjust size as needed */
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  top: auto;
+  bottom: 10px; /* Adjust as needed */
+}
+
+.carousel-control-prev {
+  left: 10px; /* Adjust as needed */
+}
+
+.carousel-control-next {
+  right: 10px; /* Adjust as needed */
+}
+
