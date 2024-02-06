@@ -207,7 +207,7 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData) {
   }
 }
 
-function createChoroplethMap(ausTopoStates, ausTopoPostCodes) {
+function createChoroplethMap(ausTopoStates, ausTopoPostCodes, selectedData) {
   d3.select(".aus-visualisation-item").selectAll("*").remove();
 
   const projection = d3.geoMercator()
@@ -229,23 +229,43 @@ function createChoroplethMap(ausTopoStates, ausTopoPostCodes) {
 
   const g = svg.append("g");
 
+  // Create a color scale
+  const colorScale = d3.scaleSequential(d3.interpolateBlues)
+      .domain([0, d3.max(selectedData, d => d.value)]);
+
+  // Map of suburbName to value for quick lookup
+  const valueMap = new Map(selectedData.map(d => [d.suburbName, d.value]));
+
   // Iterate through all state keys from "state1" to "state8"
   for (let i = 1; i <= 8; i++) {
-    const key = `state${i}`;
-    const features = topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects[key]).features;
+      const key = `state${i}`;
+      const stateFeatures = topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects[key]).features;
 
-    g.selectAll(`path.${key}`)
-      .data(features)
-      .enter().append("path")
-      .attr("class", `${key}`)
-      .attr("d", path)
-      .attr("fill", "#444") // Matched the fill color to other visualizations
-      .attr("stroke", "white")
-      .attr("stroke-width", 0.01); // Adjusted for visual consistency
+      g.selectAll(`path.${key}`)
+          .data(stateFeatures)
+          .enter().append("path")
+          .attr("class", `${key}`)
+          .attr("d", path)
+          .attr("fill", d => {
+              // Extract suburb name from each feature
+              const suburbName = d.properties.name;
+              const value = valueMap.get(suburbName);
+              return value ? colorScale(value) : '#444'; // Color based on value or default
+          })
+          .attr("stroke", "white")
+          .attr("stroke-width", 0.005);
   }
+
 
   function zoomed(event) {
     g.attr("transform", event.transform);
+
+    // Directly integrate the logic to adjust text opacity based on zoom
+    const maxZoomScaleForText = 5; // Define your own threshold for fading out the text
+    const captionOpacity = Math.max(0, 1 - Math.pow(event.transform.k / maxZoomScaleForText, 2));
+
+    d3.select("#caption-title").style("opacity", captionOpacity);
+    d3.select("#caption-text").style("opacity", captionOpacity);
   }
 }
 
