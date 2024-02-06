@@ -207,44 +207,46 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData) {
   }
 }
 
-function createChoroplethMap(ausTopoStates, ausTopoPostCodes, selectedData) {
+function createChoroplethMap(ausTopoStates, ausTopoPostCodes) {
   d3.select(".aus-visualisation-item").selectAll("*").remove();
 
-  const colorScale = d3.scaleQuantize()
-      .domain([0, d3.max(selectedData, d => d.value)])
-      .range(d3.schemeBlues[9]);
-
   const projection = d3.geoMercator()
-      .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
+    .fitSize([width, height], topojson.feature(ausTopoStates, ausTopoStates.objects.states));
+
   const path = d3.geoPath().projection(projection);
 
+  // Adjust the scale extent for closer zoom
+  const zoom = d3.zoom()
+    .scaleExtent([1, 100]) // Increased the max scale for closer zoom
+    .on("zoom", zoomed);
+
   const svg = d3.select(".aus-visualisation-item")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto;");
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height])
+    .attr("style", "max-width: 100%; height: auto;")
+    .call(zoom);
 
   const g = svg.append("g");
 
-  // Create a map for data values using suburb names as they are
-  const dataMap = new Map(selectedData.map(d => [d.suburbName, d.value]));
-
-  Object.keys(ausTopoPostCodes.objects).forEach(key => {
+  // Iterate through all state keys from "state1" to "state8"
+  for (let i = 1; i <= 8; i++) {
+    const key = `state${i}`;
     const features = topojson.feature(ausTopoPostCodes, ausTopoPostCodes.objects[key]).features;
 
-    g.selectAll("path")
+    g.selectAll(`path.${key}`)
       .data(features)
-      .join("path")
+      .enter().append("path")
+      .attr("class", `${key}`)
       .attr("d", path)
-      .attr("fill", d => {
-        const value = dataMap.get(d.properties.name);
-        if (value === undefined) {
-          return "#ccc";
-        }
-        return colorScale(value);
-      });
-      // ... remaining path attributes ...
-  });
+      .attr("fill", "#444") // Matched the fill color to other visualizations
+      .attr("stroke", "white")
+      .attr("stroke-width", 0.01); // Adjusted for visual consistency
+  }
+
+  function zoomed(event) {
+    g.attr("transform", event.transform);
+  }
 }
 
 // **************************** AUS Bubble Map Interactive VISUALISAITON 1 ******************************************

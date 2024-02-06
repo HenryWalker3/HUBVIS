@@ -51,11 +51,10 @@
     </ul>
   </div>
   <main>
-    <!-- <p>Welcome to the main landing page.</p> -->
-
-     <!-- Single Carousel Item for Australian Visualisations -->
-     <div id="carouselExampleCaptionsAUS" class="carousel slide">
+    <!-- Single Carousel Item for Australian Visualisations -->
+    <div id="carouselExampleCaptionsAUS" class="carousel slide">
       <div class="carousel-inner">
+
         <div class="carousel-item active">
           <div class="key-box">
             <div class="map-toggle-container">
@@ -64,28 +63,46 @@
                   <input type="checkbox" id="suburbToggle" unchecked>
                   <span class="slider round"></span>
                 </label>
+                <span class="toggle-description">Postcodes</span>
+              </div>              
+              <!-- Visualization and Dataset Options -->
+              <div class="visualization-options">
+                <div class="visualization-toggle">
+                  <input type="radio" id="bubbleMap" name="visualizationType" value="bubble" checked>
+                  <label for="bubbleMap">Visualisation</label>
+                </div>
+                <div class="dataset-toggle">
+                  <input type="radio" id="evanData" name="dataset" value="evan" checked>
+                  <label for="evanData">Evan's Data</label><br>
+                  <input type="radio" id="tonyData" name="dataset" value="tony">
+                  <label for="tonyData">Tony's Data</label><br>
+                  <input type="radio" id="ruixingData" name="dataset" value="ruixing">
+                  <label for="ruixingData">Ruixing's Data</label>
+                </div>
               </div>
-              
-              <span class="toggle-description">Postcodes</span>
-              <div class="dataset-toggle">
-                <input type="radio" id="evanData" name="dataset" value="evan" checked>
-                <label for="evanData">Evan's Data</label><br>
-                <input type="radio" id="tonyData" name="dataset" value="tony">
-                <label for="tonyData">Tony's Data</label><br>
-                <input type="radio" id="ruixingData" name="dataset" value="ruixing">
-                <label for="ruixingData">Ruixing's Data</label>
+              <!-- Benchmarking Options -->
+              <div class="benchmarking-options">
+                <div class="benchmarking-toggle">
+                  <input type="radio" id="choroplethMap" name="visualizationType" value="choropleth">
+                  <label for="choroplethMap">Benchmarking</label>
+                </div>
+                <div class="role-toggle">
+                  <input type="radio" id="investor" name="role" value="investor">
+                  <label for="investor">Investor</label><br>
+                  <input type="radio" id="advisor" name="role" value="advisor">
+                  <label for="advisor">Advisor</label>
+                </div>
               </div>
             </div>
           </div>
-          
-          <svg class="aus-visualisation-item"></svg>
-          <div class="carousel-caption d-none d-md-block" id="map-caption">
-            <h5 id="caption-title">Visualisation 1: Bubble Map</h5>
-            <p id="caption-text">Bubble Map of superannuation investment type by postcode Australia.</p>
-          </div>
-        </div>
-      </div>
 
+        <svg class="aus-visualisation-item"></svg>
+        <div class="carousel-caption d-none d-md-block" id="map-caption">
+          <h5 id="caption-title">Visualisation 1: Bubble Map</h5>
+          <p id="caption-text">Bubble Map of superannuation investment type by postcode Australia.</p>
+
+      </div>
+    </div>
   </main>
   <footer>
     <small>© <script>document.write(new Date().getFullYear())</script> HUB24. All Rights Reserved.</small>

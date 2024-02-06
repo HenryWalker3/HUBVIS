@@ -307,12 +307,7 @@ section p.header {
   margin-bottom: 20px; /* More space below the title */
 }
 
-.map-toggle {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 10;
-}
+
 
 .switch {
     position: relative;
@@ -384,15 +379,6 @@ input:checked + .slider:before {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
 
-.map-toggle-container {
-  text-align: left;
-}
-
-.map-toggle {
-  display: inline-block;
-  vertical-align: middle;
-}
-
 .toggle-description {
   display: inline-block;
   vertical-align: middle;
@@ -422,3 +408,31 @@ input:checked + .slider:before {
   right: 10px; /* Adjust as needed */
 }
 
+.visualization-options, .benchmarking-options {
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #3c3c3c; /* Light grey background */
+  border-radius: 5px;
+}
+
+.visualization-options {
+  margin-top: 0px;
+  border: 1px solid #ccc; /* Light grey border */
+}
+
+.benchmarking-options {
+  border: 1px solid #bbb; /* Slightly darker border for distinction */
+}
+
+/* Add any additional styling here to match your design */
+.map-toggle {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+}
+
+.toggle-description {
+  margin-left: 10px; /* Adjust as needed for spacing */
+  position: relative;
+  top: -20px; /* Adjust 'top' as needed to move the label up slightly */
+  white-space: nowrap; /* Prevents the label from wrapping */
+}
