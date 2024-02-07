@@ -160,6 +160,10 @@ footer {
   transition-delay: 0.3s; /* Faster delay for second item */
 }
 
+.navbar-side ul li:nth-child(3) {
+  transition-delay: 0.45s; /* Faster delay for second item */
+}
+
 .navbar-side ul li a {
   display: block;
   padding: 4px 20px; /* Increased padding for more border space */
@@ -409,7 +413,7 @@ input:checked + .slider:before {
 }
 
 .visualization-options, .benchmarking-options {
-  padding: 10px;
+  /* padding: 10px, 10px, 0px, 10px; */
   margin-top: 10px;
   background-color: #3c3c3c; /* Light grey background */
   border-radius: 5px;
@@ -456,12 +460,32 @@ input:checked + .slider:before {
 
 /* Adjust the specific sections if they are separated */
 .visualization-options, .benchmarking-options {
-  padding: 5px; /* Adjust padding for these sections */
-  margin-bottom: 10px; /* Space between sections */
+  padding: 5px; 
+  /* margin-bottom: 10px; Space between sections */
 }
 
 /* If these options are within divs or spans */
 .visualization-toggle, .dataset-toggle, .benchmarking-toggle, .role-toggle {
   display: block; /* Ensure they are block level for spacing */
   margin-bottom: 5px; /* Adjust spacing between toggles */
+}
+
+.tooltip {
+  border-color: #000;
+  color: #333;
+}
+
+/* Adjusted CSS */
+/* Hidden state with transition properties */
+.hidden-transition {
+  opacity: 0;
+  transform: translateY(20px); /* Slide from above */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transition for both properties */
+}
+
+/* Apply this class to elements that should be visible and animated */
+.visible-transition {
+  opacity: 1;
+  transform: translateY(0); /* Return to original position */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Ensure transition applies for appearing as well */
 }
