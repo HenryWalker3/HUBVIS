@@ -1,111 +1,6 @@
-/* Importing Montserrat font from Google Fonts */
+ /******************************** FONT & MEDIA STYLES **********************************/
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
-
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-
-section {
-  display: block;
-  padding-top: 20px; /* Increase top padding */
-  padding-bottom: 40px; /* Increase bottom padding */
-}
-
-ul {
-  list-style: none;
-}
-q {
-  quotes: none;
-}
-q:after {
-  content: "";
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-iframe {
-  vertical-align: bottom;
-  max-width: 100%;
-}
-select {
-  font: inherit;
-}
-* {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-p {
-  padding-left: 10px;
-}
-
-body {
-  line-height: 1;
-  
-  font: 16px/1.7 Neue Haas Grotesk, Pro;
-  background-color: rgb(43, 43, 43);
-  color: rgb(255, 255, 255);
-  margin: 0;
-  padding: 0;
-}
-
-header a:hover {
-  color: rgba(37, 65, 214, 0.9);
-  font-weight: bold;
-}
-
-header li {
-  padding: 0 22px 0 22px;
-  float: left;
-  display: inline;
-}
-
-header a {
-  color:rgb(43, 43, 43);
-  font-size: 22px;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-
-header nav {
-  margin-bottom: 28px;
-  margin-top: 10px;
-  float: right;
-}
-
-.navbar, .navbar-brand, .container-fluid, .nav-link {
-  font: 20px/1.7 Bebas Neue,regular;
-  background: rgb(36, 36, 36);
-  color:rgb(255, 255, 255);
-  font-size: 24px; /* Bigger font size */
-  font-weight: bold; /* Bold font */
-}
-
-.navbar-toggler {
-  background: rgb(255, 255, 255);
-  font-size: 22px;
-}
-
-footer {
-  background-color: rgb(36, 36, 36);
-  color:rgb(255, 255, 255);
-  padding:20px; 
-  text-align: center;
-  margin-top:20px;
-  font-size: 16px; /* Adjusted font size for mobile footer */
-}
 
 @media(max-width: 810px) {
   iframe,
@@ -134,7 +29,141 @@ footer {
     font-size: 18px; /* Adjust subtitle size for mobile */
   }
 }
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
 
+ /******************************** TEXT STYLES **********************************/
+ul {
+  list-style: none;
+}
+q {
+  quotes: none;
+}
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+iframe {
+  vertical-align: bottom;
+  max-width: 100%;
+}
+select {
+  font: inherit;
+} * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+p {
+  padding-left: 10px;
+}
+body {
+  line-height: 1;
+  
+  font: 16px/1.7 Neue Haas Grotesk, Pro;
+  background-color: rgb(43, 43, 43);
+  color: rgb(255, 255, 255);
+  margin: 0;
+  padding: 0;
+}
+section {
+  display: block;
+  padding-top: 20px; /* Increase top padding */
+  padding-bottom: 40px; /* Increase bottom padding */
+}
+
+section p.header {
+  font-family: 'Roboto Condensed', sans-serif; /* Apply the new font */
+  font-size: 20px; /* Increase font size */
+  font-weight: 700; /* Make font bold */
+  text-transform: uppercase; /* Uppercase letters for more impact */
+  margin-bottom: 20px; /* More space below the title */
+}
+
+ /******************************** HEADER + FOOTER STYLES **********************************/
+header {
+  background: rgb(36, 36, 36); /* Dark background */
+  color: rgb(255, 255, 255); /* White text */
+  text-align: center; /* Center align content */
+  padding: 40px 0; /* Increased top and bottom padding */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Enhanced shadow for depth */
+}
+header h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 100px; /* Even larger font size */
+  font-weight: 700;
+  letter-spacing: 5px; /* More spacing */
+  animation: enlargeEffect 1s ease-out forwards; /* Apply the animation */
+}
+header p {
+  font-size: 22px; /* Subtitle or descriptive text size */
+  margin-top: 15px; /* Space above the subtitle/description */
+  color: #a5a5a5; /* Light grey for subtitle */
+}
+header a:hover {
+  color: rgba(37, 65, 214, 0.9);
+  font-weight: bold;
+}
+header li {
+  padding: 0 22px 0 22px;
+  float: left;
+  display: inline;
+}
+header a {
+  color:rgb(43, 43, 43);
+  font-size: 22px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+header nav {
+  margin-bottom: 28px;
+  margin-top: 10px;
+  float: right;
+}
+footer {
+  background-color: rgb(36, 36, 36);
+  color:rgb(255, 255, 255);
+  padding:20px; 
+  text-align: center;
+  margin-top:20px;
+  font-size: 16px; /* Adjusted font size for mobile footer */
+}
+
+ /******************************** NAVIGATION STYLES **********************************/
+.navbar, .navbar-brand, .container-fluid, .nav-link {
+  font: 20px/1.7 Bebas Neue,regular;
+  background: rgb(36, 36, 36);
+  color:rgb(255, 255, 255);
+  font-size: 24px; /* Bigger font size */
+  font-weight: bold; /* Bold font */
+}
+.navbar-brand {
+  cursor: default; /* Change cursor to default to avoid the pointer hand */
+  pointer-events: none; /* Prevent any pointer events like click or hover */
+  color: rgb(255, 255, 255); /* Set a fixed color */
+  font-weight: normal; /* Optional: Adjust font weight as needed */
+  text-decoration: none; /* Ensure no underline */
+}
+.navbar-brand:hover, .navbar-brand:focus {
+  color: rgb(255, 255, 255); /* Keep the color consistent on hover or focus */
+  text-decoration: none; /* No underline on hover or focus */
+}
+.navbar-toggler {
+  background: rgb(255, 255, 255);
+  font-size: 22px;
+}
 .navbar-side ul li {
   opacity: 0;
   transform: translateY(-20px);
@@ -151,19 +180,15 @@ footer {
   cursor: pointer;
 
 }
-
 .navbar-side ul li:nth-child(1) {
   transition-delay: 0.15s; /* Faster delay for first item */
 }
-
 .navbar-side ul li:nth-child(2) {
   transition-delay: 0.3s; /* Faster delay for second item */
 }
-
 .navbar-side ul li:nth-child(3) {
   transition-delay: 0.45s; /* Faster delay for second item */
 }
-
 .navbar-side ul li a {
   display: block;
   padding: 4px 20px; /* Increased padding for more border space */
@@ -172,7 +197,6 @@ footer {
   font-size: 20px; /* Larger font for sidebar links */
   text-decoration: none;
 }
-
 .nav-description {
   display: block;
   padding-left: 20px; /* Aligns with the link's padding */
@@ -180,27 +204,10 @@ footer {
   font-size: 16px; /* Slightly larger font for descriptions */
   color: #808080; /* Grey color for descriptions */
 }
-
-/* Adjust the overlay background to cover the whole screen */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  z-index: 5; /* Ensures it's above other content */
-
-  background: rgba(0, 0, 0, 0.7); /* Darker overlay */
-}
-
-/* When the side nav is opened, fade in the items */
 .navbar-side.open ul li {
   opacity: 1;
   transform: translateY(0);
 }
-
 .navbar-side {
   position: fixed;
   top: 0;
@@ -215,40 +222,42 @@ footer {
   background-color: rgb(43, 43, 43); /* Darker grey for navbar background */
   color: #fff; /* White text for general navbar content */
 }
-
 .navbar-side ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .navbar-side ul li a:hover {
   color: #fff; /* Brighter white on hover for better visibility */
 }
 
 
+ /******************************** GENERAL & ANIMATION STYLES **********************************/
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 5; /* Ensures it's above other content */
+  background: rgba(0, 0, 0, 0.7); /* Darker overlay */
+}
 
-
-
-/* Enhancing the Main Content Area */
 main {
   font-size: 18px; /* Larger font size for content */
   padding: 20px; /* More padding for a spacious layout */
 }
-
 .carousel-item h5 {
   font-size: 24px; /* Larger font for carousel titles */
   font-weight: bold;
 }
-
 .carousel-item p {
   font-size: 18px; /* Larger font for carousel descriptions */
 }
 
-/* Media Query Adjustments for Responsive Design */
 @media(max-width: 810px){
-  /* ... [Existing responsive styles] ... */
-
   main {
     font-size: 16px; /* Adjusted font size for mobile content */
   }
@@ -259,35 +268,6 @@ main {
     font-size: 16px; /* Adjusted font size for mobile carousel descriptions */
   }
 }
-
-
-
-
-/* Header Styling */
-header {
-  background: rgb(36, 36, 36); /* Dark background */
-  color: rgb(255, 255, 255); /* White text */
-  text-align: center; /* Center align content */
-  padding: 40px 0; /* Increased top and bottom padding */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Enhanced shadow for depth */
-}
-
-header h1 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 100px; /* Even larger font size */
-  font-weight: 700;
-  letter-spacing: 5px; /* More spacing */
-  animation: enlargeEffect 1s ease-out forwards; /* Apply the animation */
-}
-
-/* Optional subtitle or additional text in the header */
-header p {
-  font-size: 22px; /* Subtitle or descriptive text size */
-  margin-top: 15px; /* Space above the subtitle/description */
-  color: #a5a5a5; /* Light grey for subtitle */
-}
-
-/* Keyframes for enlarging effect */
 @keyframes enlargeEffect {
   from {
     transform: scale(0.5); /* Start from half size */
@@ -298,34 +278,17 @@ header p {
     opacity: 1;
   }
 }
-
-
-
-
-/* Styling for the section titles */
-section p.header {
-  font-family: 'Roboto Condensed', sans-serif; /* Apply the new font */
-  font-size: 20px; /* Increase font size */
-  font-weight: 700; /* Make font bold */
-  text-transform: uppercase; /* Uppercase letters for more impact */
-  margin-bottom: 20px; /* More space below the title */
-}
-
-
-
 .switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
 }
-
 .switch input { 
     opacity: 0;
     width: 0;
     height: 0;
 }
-
 .slider {
     position: absolute;
     cursor: pointer;
@@ -337,7 +300,6 @@ section p.header {
     -webkit-transition: .4s;
     transition: .4s;
 }
-
 .slider:before {
     position: absolute;
     content: "";
@@ -349,30 +311,25 @@ section p.header {
     -webkit-transition: .4s;
     transition: .4s;
 }
-
 input:checked + .slider {
     background-color: #2196F3;
 }
-
 input:focus + .slider {
     box-shadow: 0 0 1px #2196F3;
 }
-
 input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
 }
-
-/* Rounded sliders */
 .slider.round {
     border-radius: 34px;
 }
-
 .slider.round:before {
     border-radius: 50%;
 }
 
+ /******************************** MINI BOXES / SELECTION STYLES **********************************/
 .key-box {
   position: absolute;
   top: 10px;
@@ -382,110 +339,76 @@ input:checked + .slider:before {
   border-radius: 5px; /* Rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
-
 .toggle-description {
   display: inline-block;
   vertical-align: middle;
   color: grey;
   font-size: 14px;
   margin-top: 40px;
-  margin-left: 5px; /* Space between the toggle and the text */
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  width: 20px; /* Adjust size as needed */
-  height: 20px; /* Adjust size as needed */
-}
-
-.carousel-control-prev,
-.carousel-control-next {
-  top: auto;
-  bottom: 10px; /* Adjust as needed */
-}
-
-.carousel-control-prev {
-  left: 10px; /* Adjust as needed */
-}
-
-.carousel-control-next {
-  right: 10px; /* Adjust as needed */
-}
-
-.visualization-options, .benchmarking-options {
-  /* padding: 10px, 10px, 0px, 10px; */
-  margin-top: 10px;
-  background-color: #3c3c3c; /* Light grey background */
-  border-radius: 5px;
-}
-
-.visualization-options {
-  margin-top: 0px;
-  border: 1px solid #ccc; /* Light grey border */
-}
-
-.benchmarking-options {
-  border: 1px solid #bbb; /* Slightly darker border for distinction */
-}
-
-/* Add any additional styling here to match your design */
-.map-toggle {
-  display: flex;
-  align-items: center; /* Align items vertically in the center */
-}
-
-.toggle-description {
   margin-left: 10px; /* Adjust as needed for spacing */
   position: relative;
   top: -20px; /* Adjust 'top' as needed to move the label up slightly */
   white-space: nowrap; /* Prevents the label from wrapping */
 }
-
-
-/* Target the container of the form elements */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px; /* Adjust size as needed */
+  height: 20px; /* Adjust size as needed */
+}
+.carousel-control-prev,
+.carousel-control-next {
+  top: auto;
+  bottom: 10px; /* Adjust as needed */
+}
+.carousel-control-prev {
+  left: 10px; /* Adjust as needed */
+}
+.carousel-control-next {
+  right: 10px; /* Adjust as needed */
+}
+.visualization-options, .benchmarking-options {
+  margin-top: 10px;
+  background-color: #3c3c3c; /* Light grey background */
+  border-radius: 5px;
+  padding: 5px; 
+}
+.visualization-options {
+  margin-top: 0px;
+  border: 1px solid #ccc; /* Light grey border */
+}
+.benchmarking-options {
+  border: 1px solid #bbb; /* Slightly darker border for distinction */
+}
+.map-toggle {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+}
 .map-toggle-container {
   font-size: 14px; /* Adjust font size */
 }
-
-/* Adjust labels */
 .map-toggle-container label {
   font-size: 14px; /* Adjust label font size */
   margin-right: 10px; /* Adjust spacing if needed */
 }
-
-/* Adjust inputs, especially for radio buttons and checkboxes */
 .map-toggle-container input[type="radio"], .map-toggle-container input[type="checkbox"] {
   margin-right: 5px; /* Adjust spacing around radio buttons/checkboxes */
 }
-
-/* Adjust the specific sections if they are separated */
-.visualization-options, .benchmarking-options {
-  padding: 5px; 
-  /* margin-bottom: 10px; Space between sections */
-}
-
-/* If these options are within divs or spans */
 .visualization-toggle, .dataset-toggle, .benchmarking-toggle, .role-toggle {
   display: block; /* Ensure they are block level for spacing */
   margin-bottom: 5px; /* Adjust spacing between toggles */
 }
-
 .tooltip {
   border-color: #000;
   color: #333;
 }
-
-/* Adjusted CSS */
-/* Hidden state with transition properties */
 .hidden-transition {
   opacity: 0;
   transform: translateY(20px); /* Slide from above */
   transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transition for both properties */
 }
-
-/* Apply this class to elements that should be visible and animated */
 .visible-transition {
   opacity: 1;
   transform: translateY(0); /* Return to original position */
   transition: opacity 0.5s ease, transform 0.5s ease; /* Ensure transition applies for appearing as well */
 }
+
