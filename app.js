@@ -43,15 +43,14 @@ document.addEventListener('DOMContentLoaded', function() {
   loadData().then(() => {
       document.querySelectorAll("input[name='dataset']").forEach(input => {
         input.addEventListener('change', function() {
-            let selectedData;
             if (this.value === 'evan') {
-                selectedData = evanData;
+              currentSelectedData  = evanData;
             } else if (this.value === 'tony') {
-                selectedData = tonyData;
+              currentSelectedData  = tonyData;
             } else if (this.value === 'ruixing') {
-                selectedData = ruixingData;
+              currentSelectedData  = ruixingData;
             }
-            mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData);
+            mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, currentSelectedData );
         });    
       });
       document.querySelectorAll("input[name='visualizationType']").forEach(input => {
