@@ -412,3 +412,82 @@ input:checked + .slider:before {
   transition: opacity 0.5s ease, transform 0.5s ease; /* Ensure transition applies for appearing as well */
 }
 
+/* General styling for the benchmarking options */
+.benchmarking-options {
+  display: flex;
+  flex-direction: column; /* Keep items in a column */
+}
+
+.role-container {
+  display: flex;
+  flex-direction: column; /* Ensure roles and their options stack vertically */
+}
+
+.role-option {
+  margin-bottom: 10px; /* Space out each role option */
+}
+
+.additional-options {
+  display: none; /* Initially hidden */
+  margin-left: 20px; /* Indent additional options for visual hierarchy */
+  margin-top: 5px; /* Space between the main role option and additional options */
+}
+
+/* Styling for radio buttons to make them more visually appealing */
+input[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: inline-block;
+  width: 15px; /* Reduced size */
+  height: 15px; /* Reduced size */
+  padding: 1px;
+  background-clip: content-box;
+  border: 2px solid #bbbbbb; /* Adjust border-width if necessary */
+  background-color: #e7e6e7;
+  border-radius: 50%;
+}
+
+input[type="radio"]:checked {
+  background-color: rgba(37, 65, 214, 1);
+  border-color: #e7e6e7;
+}
+
+/* Labels styling for better alignment with custom radio buttons */
+label {
+  display: inline-block;
+  margin-left: 5px;
+  position: relative;
+  top: -1px; /* Adjusted for smaller buttons */
+  font-size: 14px; /* Optional: Adjust font size for better fit and appearance */
+}
+
+input[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Rest of your styling */
+}
+
+
+.floating-tab {
+    position: fixed; /* Fixed positioning to make it float */
+    top: 20%; /* Adjust based on your header/nav size */
+    right: 20px; /* Distance from the right edge of the viewport */
+    width: 250px; /* Or your preferred width */
+    background-color: #fff; /* Match your site's color scheme */
+    border: 1px solid #ccc; /* Border to match Benchmarking styling */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Optional shadow for depth */
+    padding: 15px; /* Padding inside the container */
+    z-index: 100; /* Ensure it's above other content but adjust as needed */
+}
+
+.options-container {
+    margin-top: 10px;
+}
+
+.option-label {
+    display: block; /* Or inline-block based on your design */
+    margin: 10px 0; /* Space out each option */
+}

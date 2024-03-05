@@ -1,7 +1,12 @@
+const width = 1200;
+const height = 600;
+let evanData, tonyData, ruixingData, ausTopoStates, ausTopoSuburbs, ausGeoStates, ausTopoPostCodes; // Declare ausTopoPostCodes here
+const isHeatmapPage = window.location.href.includes('heatmap.html');
 
 document.addEventListener('DOMContentLoaded', function() {
+  populateAdditionalSelectors();
+  
   const isHeatmapPage = window.location.href.includes('heatmap.html');
-
   // If on heatmap.html, hide or remove the "Postcodes" slider
   if (isHeatmapPage) {
     const postcodesSliderContainer = document.querySelector('.map-toggle');
@@ -77,13 +82,67 @@ document.addEventListener('DOMContentLoaded', function() {
     navbarSideMenu.classList.remove('open'); // Remove open class
     overlay.style.display = 'none'; // Hide overlay
   });
+  document.getElementById('investor').addEventListener('change', function() {
+    if (this.checked) {
+        document.getElementById("additional-investors").style.display = "block";
+        document.getElementById("additional-advisors").style.display = "none"; // Hide Advisor names
+    }
 });
 
-const width = 1200;
-const height = 600;
-let evanData, tonyData, ruixingData, ausTopoStates, ausTopoSuburbs, ausGeoStates, ausTopoPostCodes; // Declare ausTopoPostCodes here
-const isHeatmapPage = window.location.href.includes('heatmap.html');
+document.getElementById('advisor').addEventListener('change', function() {
+    if (this.checked) {
+        document.getElementById("additional-advisors").style.display = "block";
+        document.getElementById("additional-investors").style.display = "none"; // Hide Investor names
+    }
+});
+});
 
+function generateRandomNames() {
+  const names = ["Henry", "Siarra", "Ruixing", "Toluwa", "Newton", "Jamie", "Tony", "Matt", "Evan"];
+  let selectedNames = [];
+  while (selectedNames.length < 3) {
+    const randomIndex = Math.floor(Math.random() * names.length);
+    const name = names[randomIndex];
+    if (!selectedNames.includes(name)) {
+      selectedNames.push(name);
+    }
+  }
+  return selectedNames;
+}
+
+function populateAdditionalSelectors() {
+  const investorsNames = generateRandomNames(); // Keep random names for investors
+  const advisorsNames = ["Evan", "Natasha"]; // Set fixed names for advisors
+
+  populateOptions("additional-investors", investorsNames, "additionalInvestor");
+  populateOptions("additional-advisors", advisorsNames, "additionalAdvisor");
+}
+
+function populateOptions(containerId, names, inputName) {
+  const container = document.getElementById(containerId);
+  if (container === null) {
+      console.error(`Element with ID '${containerId}' not found.`);
+      return; // Exit the function to avoid attempting to set properties on null
+  }
+
+  container.innerHTML = ''; // Proceed if the element exists
+
+  names.forEach(name => {
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = inputName;
+    input.value = name;
+    input.id = `${inputName}-${name.toLowerCase().replace(/\s+/g, '-')}`; // Ensuring unique ID
+
+    const label = document.createElement("label");
+    label.htmlFor = input.id;
+    label.textContent = name;
+
+    container.appendChild(input);
+    container.appendChild(label);
+    container.appendChild(document.createElement("br"));
+  });
+}
 
 // **************************** MAIN VISUALISATION  ******************************************
 function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData) {

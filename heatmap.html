@@ -55,12 +55,14 @@
     </ul>
   </div>
   <main>
+    <div class="main-content-area">
 
     <!-- Single Carousel Item for Australian Visualisations -->
     <div id="carouselExampleCaptionsAUS" class="carousel slide">
       <div class="carousel-inner">
         <div class="carousel-item active">
           <div class="key-box">
+            
             <div class="map-toggle-container">
               <div class="map-toggle">
                 <label class="switch">
@@ -70,6 +72,7 @@
                 <span class="toggle-description">Postcodes</span>
               </div>              
               <!-- Visualization and Dataset Options -->
+              
               <div class="visualization-options">
                 <div class="visualization-toggle">
                   <input type="radio" id="bubbleMap" name="visualizationType" value="bubble" checked>
@@ -90,13 +93,20 @@
                   <input type="radio" id="choroplethMap" name="visualizationType" value="choropleth">
                   <label for="choroplethMap">Benchmarking</label>
                 </div>
-                <div class="role-toggle">
-                  <input type="radio" id="investor" name="role" value="investor">
-                  <label for="investor">Investor</label><br>
-                  <input type="radio" id="advisor" name="role" value="advisor">
-                  <label for="advisor">Advisor</label>
+                <div class="role-container">
+                  <div class="role-option">
+                    <input type="radio" id="investor" name="role" value="investor">
+                    <label for="investor">Investor</label>
+                    <div id="additional-investors" class="additional-options"></div>
+                  </div>
+                  <div class="role-option">
+                    <input type="radio" id="advisor" name="role" value="advisor">
+                    <label for="advisor">Advisor</label>
+                    <div id="additional-advisors" class="additional-options"></div>
+                  </div>
                 </div>
               </div>
+
             </div>
           </div>
 
