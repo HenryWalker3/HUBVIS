@@ -491,3 +491,31 @@ input[type="radio"] {
     display: block; /* Or inline-block based on your design */
     margin: 10px 0; /* Space out each option */
 }
+
+/* Ensure this is added AFTER your current .key-box styles */
+.key-box--right {
+  position: absolute;
+  top: 10px; /* Adjust as needed to not overlap with your header */
+  right: 10px; /* Position it on the right */
+  left: auto; /* Remove any left positioning */
+  background-color: #3c3c3c; /* Light grey background */
+
+  padding: 10px; /* Padding around the contents */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 10px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  z-index: 10; /* Adjust if needed to ensure it's above other content */
+  border: 2px solid #bbbbbb; /* Adjust border-width if necessary */
+
+}
+
+/* If your checkboxes need specific styles, add them here */
+.key-box--right .switch {
+  /* Your checkbox styles */
+}
+
+/* Adjust the toggle-description as needed */
+.key-box--right .toggle-description {
+  color: grey;
+  font-size: 14px;
+  /* Other styles */
+}
