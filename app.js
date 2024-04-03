@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // postcodesSliderContainer.remove();
     }
   }
+  
   function toggleVisibility(showSelectors, hideSelectors) {
     showSelectors.forEach(selector => {
         document.querySelectorAll(selector).forEach(el => el.style.display = 'block'); // Show elements
@@ -25,25 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  adjustVisibilityForSelectedVisualization();
+
   document.getElementById('bubbleMap').addEventListener('change', function() {
-      if (this.checked) {
-          toggleVisibility(['.dataset-toggle', '.benchmarking-options'], ['.role-toggle']); // Keep benchmarking options always visible
-      }
+    adjustVisibilityForSelectedVisualization();
   });
   document.getElementById('choroplethMap').addEventListener('change', function() {
-      if (this.checked) {
-          toggleVisibility(['.benchmarking-options', '.role-toggle'], ['.dataset-toggle']); // Show roles when benchmarking is selected
-      }
+    adjustVisibilityForSelectedVisualization();
   });
-
-  if (document.getElementById('bubbleMap').checked) {
-      toggleVisibility(['.dataset-toggle', '.benchmarking-options'], ['.role-toggle']); // Ensure benchmarking is visible along with dataset options
-  } else if (document.getElementById('choroplethMap').checked) {
-      toggleVisibility(['.benchmarking-options', '.role-toggle'], ['.dataset-toggle']);
-  } else {
-      // Default visibility if no specific option is pre-selected
-      toggleVisibility(['.dataset-toggle', '.benchmarking-options'], ['.role-toggle']); // Show dataset options and ensure benchmarking is visible
-  }
 
   loadData().then(() => {
       document.querySelectorAll("input[name='dataset']").forEach(input => {
@@ -61,6 +51,13 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll("input[name='visualizationType']").forEach(input => {
           input.addEventListener('change', function() {
               mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, currentSelectedData);
+      });
+      document.querySelectorAll("input[name='ausData']").forEach(radio => {
+        radio.addEventListener('change', function(event) {
+          if (this.checked) {
+            loadDataForDataPoint(this.value);
+          }
+        });
       });
   });
   
@@ -96,6 +93,57 @@ document.getElementById('advisor').addEventListener('change', function() {
     }
 });
 });
+
+// New function to adjust visibility based on selected visualization
+function adjustVisibilityForSelectedVisualization() {
+  if (document.getElementById('bubbleMap').checked) {
+    // Show elements related to bubbleMap and hide unrelated ones
+    toggleVisibility(['.dataset-toggle'], ['.role-toggle']);
+  } else if (document.getElementById('choroplethMap').checked) {
+    // Adjust for choroplethMap
+    toggleVisibility(['.role-toggle'], ['.dataset-toggle']);
+  } else {
+    // Default state or other visualizations
+    toggleVisibility(['.dataset-toggle', '.role-toggle'], []); // Assume all should be shown by default or adjust as needed
+  }
+
+  // Ensure benchmarking options are always visible, if this is a requirement
+  document.querySelectorAll('.benchmarking-options').forEach(el => el.style.display = 'block');
+}
+
+// Adjusted toggleVisibility function to correctly handle showing/hiding elements
+function toggleVisibility(showSelectors, hideSelectors) {
+  // Show elements
+  showSelectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach(el => el.style.display = 'block');
+  });
+  // Hide elements
+  hideSelectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach(el => el.style.display = 'none');
+  });
+}
+
+function loadDataForDataPoint(dataPointKey) {
+  // Check if the necessary TopoJSON data is defined
+  if (!ausTopoPostCodes || !ausTopoPostCodes.objects || !Object.keys(ausTopoPostCodes.objects).length) {
+    console.error('TopoJSON data is not properly defined.');
+    return;
+  }
+
+  // Fetch and process CSV data for the selected data point
+  d3.csv('/AUS_JSON_Files/aus-gov-postcode-data-sorted-EDITED.csv').then(data => {
+    // Example of processing CSV data
+    const filteredData = data.map(d => ({
+      postcode: d['Postcode'],
+      value: +d[dataPointKey] // Make sure the column names match your CSV file
+    }));
+
+    // Update the visualization with the filteredData
+    // E.g., mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, filteredData);
+  }).catch(error => {
+    console.error('Error loading CSV data for data point: ', dataPointKey, error);
+  });
+}
 
 function generateRandomNames() {
   const names = ["Henry", "Siarra", "Ruixing", "Toluwa", "Newton", "Jamie", "Tony", "Matt", "Evan"];
