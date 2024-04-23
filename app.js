@@ -1,6 +1,7 @@
 const width = 1200;
 const height = 600;
-let evanData, tonyData, ruixingData, ausTopoStates, ausTopoSuburbs, ausGeoStates, ausTopoPostCodes; // Declare ausTopoPostCodes here
+let evanData, tonyData, ruixingData, censusData, ausTopoStates, ausTopoSuburbs, ausGeoStates, ausTopoPostCodes; // Declare ausTopoPostCodes here
+let census1, census2, census3, census4, census5, census6, census7, census8, census9, census10, census11, census12;
 const isHeatmapPage = window.location.href.includes('heatmap.html');
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -12,19 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const postcodesSliderContainer = document.querySelector('.map-toggle');
     if (postcodesSliderContainer) {
       postcodesSliderContainer.style.display = 'none'; // Hide the slider container
-      // Or, if you prefer to remove it entirely:
-      // postcodesSliderContainer.remove();
     }
   }
-  
-  function toggleVisibility(showSelectors, hideSelectors) {
-    showSelectors.forEach(selector => {
-        document.querySelectorAll(selector).forEach(el => el.style.display = 'block'); // Show elements
-    });
-    hideSelectors.forEach(selector => {
-        document.querySelectorAll(selector).forEach(el => el.style.display = 'none'); // Hide elements
-    });
-  }
+
 
   adjustVisibilityForSelectedVisualization();
 
@@ -36,18 +27,47 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   loadData().then(() => {
-      document.querySelectorAll("input[name='dataset']").forEach(input => {
-        input.addEventListener('change', function() {
-            if (this.value === 'evan') {
-              currentSelectedData  = evanData;
-            } else if (this.value === 'tony') {
-              currentSelectedData  = tonyData;
-            } else if (this.value === 'ruixing') {
-              currentSelectedData  = ruixingData;
-            }
-            mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, currentSelectedData );
-        });    
+    document.querySelectorAll("input[name='dataset']").forEach(input => {
+      input.addEventListener('change', function() {
+          if (this.value === 'evan') {
+            currentSelectedData  = evanData;
+          } else if (this.value === 'Henry' || this.value === 'Siarra' || this.value === 'Ruixing' || this.value === 'Toluwa'
+          || this.value === 'Newton'|| this.value === 'Jamie'|| this.value === 'Tony'|| this.value === 'Matt') {
+            currentSelectedData = (this.value === 'tony' ? tonyData : this.value === 'henry' ? henryData : newtonData);
+            highlightRandomSuburb(currentSelectedData); // This is the new function to implement
+          } else if (this.value === 'tony') {
+            currentSelectedData  = tonyData;
+          } else if (this.value === 'ruixing') {
+            currentSelectedData  = ruixingData;
+          } else if (this.value === 'value1') {
+            currentSelectedData  = census1;
+          } else if (this.value === 'value2') {
+            currentSelectedData  = census2;
+          } else if (this.value === 'value3') {
+            currentSelectedData  = census3;
+          } else if (this.value === 'value4') {
+            currentSelectedData  = census4;
+          } else if (this.value === 'value5') {
+            currentSelectedData  = census5;
+          } else if (this.value === 'value6') {
+            currentSelectedData  = census6;
+          } else if (this.value === 'value7') {
+            currentSelectedData  = census7;
+          } else if (this.value === 'value8') {
+            currentSelectedData  = census8;
+          } else if (this.value === 'value9') {
+            currentSelectedData  = census9;
+          } else if (this.value === 'value10') {
+            currentSelectedData  = census10;
+          } else if (this.value === 'value11') {
+            currentSelectedData  = census11;
+          } else if (this.value === 'value12') {
+            currentSelectedData  = census12;
+          } 
+          // Use currentSelectedData to update the visualization...
+          mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, currentSelectedData);
       });
+    });
       document.querySelectorAll("input[name='visualizationType']").forEach(input => {
           input.addEventListener('change', function() {
               mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, currentSelectedData);
@@ -93,6 +113,17 @@ document.getElementById('advisor').addEventListener('change', function() {
     }
 });
 });
+
+function highlightRandomSuburb(data) {
+  // Assume data is an array of objects each with a 'suburbName' and other properties
+  console.log("HIT!");
+  const randomIndex = Math.floor(Math.random() * data.length);
+  const suburbToHighlight = data[randomIndex].suburbName;
+  
+  // Assuming function to update map visualization
+  // This function should set the color of the selected suburb to bright orange
+  updateSuburbColorOnMap(suburbToHighlight, 'brightOrange');
+}
 
 // New function to adjust visibility based on selected visualization
 function adjustVisibilityForSelectedVisualization() {
@@ -146,7 +177,7 @@ function loadDataForDataPoint(dataPointKey) {
 }
 
 function generateRandomNames() {
-  const names = ["Henry", "Siarra", "Ruixing", "Toluwa", "Newton", "Jamie", "Tony", "Matt", "Evan"];
+  const names = ["Henry", "Siarra", "Ruixing", "Toluwa", "Newton", "Jamie", "Tony", "Matt"];
   let selectedNames = [];
   while (selectedNames.length < 3) {
     const randomIndex = Math.floor(Math.random() * names.length);
@@ -343,6 +374,8 @@ function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData) {
       zoomed({ transform: d3.zoomTransform(svg.node()) });
     });
   } else if (visualizationType === 'choropleth') {
+    createChoroplethMap(ausTopoStates, ausTopoPostCodes, selectedData);
+  } else if (visualizationType.startsWith('value')) {
     createChoroplethMap(ausTopoStates, ausTopoPostCodes, selectedData);
   } else {
       console.error("Invalid visualization type: ", visualizationType);
@@ -695,8 +728,22 @@ function loadData() {
     d3.csv('/AUS_JSON_Files/evan_data.csv'),
     d3.csv('/AUS_JSON_Files/evan-tony-data.csv'),
     d3.csv('/AUS_JSON_Files/ruixing-data.csv'),
+    d3.csv('/AUS_JSON_Files/aus-gov-postcode-data-sorted-EDITED.csv'),
+    d3.csv('/AUS_JSON_Files/census1.csv'),
+    d3.csv('/AUS_JSON_Files/census2.csv'),
+    d3.csv('/AUS_JSON_Files/census3.csv'),
+    d3.csv('/AUS_JSON_Files/census4.csv'),
+    d3.csv('/AUS_JSON_Files/census5.csv'),
+    d3.csv('/AUS_JSON_Files/census6.csv'),
+    d3.csv('/AUS_JSON_Files/census7.csv'),
+    d3.csv('/AUS_JSON_Files/census8.csv'),
+    d3.csv('/AUS_JSON_Files/census9.csv'),
+    d3.csv('/AUS_JSON_Files/census10.csv'),
+    d3.csv('/AUS_JSON_Files/census11.csv'),
+    d3.csv('/AUS_JSON_Files/census12.csv'),
   ])
-  .then(([usStates, usCounties, rawPopulationData, ausTopoSuburbsData, ausGeoStatesData, ausTopoStatesData, rawEvanData, rawTonyData, rawRuixingData]) => {
+  .then(([usStates, usCounties, rawPopulationData, ausTopoSuburbsData, ausGeoStatesData, ausTopoStatesData, rawEvanData, rawTonyData, rawRuixingData, rawCensusData,
+  rawCensus1, rawCensus2, rawCensus3, rawCensus4, rawCensus5, rawCensus6, rawCensus7, rawCensus8, rawCensus9, rawCensus10, rawCensus11, rawCensus12]) => {
     const population = rawPopulationData
       .slice(1) // If there's a header
       .map(([p, state, county]) => ({
@@ -713,6 +760,20 @@ function loadData() {
     evanData = processCSVData(rawEvanData);
     tonyData = processCSVData(rawTonyData);
     ruixingData = processCSVData(rawRuixingData);
+    censusData = processCSVData(rawCensusData);
+    census1 = processCSVData(rawCensus1);
+    census2 = processCSVData(rawCensus2);
+    census3 = processCSVData(rawCensus3);
+    census4 = processCSVData(rawCensus4);
+    census5 = processCSVData(rawCensus5);
+    census6 = processCSVData(rawCensus6);
+    census7 = processCSVData(rawCensus7);
+    census8 = processCSVData(rawCensus8);
+    census9 = processCSVData(rawCensus9);
+    census10 = processCSVData(rawCensus10);
+    census11 = processCSVData(rawCensus11);
+    census12 = processCSVData(rawCensus12);
+
     currentSelectedData = evanData; // Default or based on the selected dataset
 
     if (document.querySelector('.aus-visualisation-item')) {
@@ -736,9 +797,9 @@ function loadData() {
 
 function processCSVData(rawData) {
   return rawData.map(d => {
-      return {
-          suburbName: d.suburbName.trim(),
-          value: +d.value
-      };
+    return {
+        suburbName: d.suburbName.trim(),
+        value: +d.value
+    };
   });
 }
