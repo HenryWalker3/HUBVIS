@@ -3,9 +3,15 @@ const height = 600;
 let evanData, tonyData, ruixingData, censusData, ausTopoStates, ausTopoSuburbs, ausGeoStates, ausTopoPostCodes; // Declare ausTopoPostCodes here
 let census1, census2, census3, census4, census5, census6, census7, census8, census9, census10, census11, census12;
 const isHeatmapPage = window.location.href.includes('heatmap.html');
+const suburbColors = {
+  "Jamie": ["CANBERRA CENTRAL"],
+  "Matt": ["COOMBS"],
+  "Toluwa": ["FLOREY"],
+  "Evan": ["CANBERRA CENTRAL", "COOMBS"],
+  "Natasha": ["CANBERRA CENTRAL", "COOMBS", "FLOREY"]
+};
 
 document.addEventListener('DOMContentLoaded', function() {
-  populateAdditionalSelectors();
   
   const isHeatmapPage = window.location.href.includes('heatmap.html');
   // If on heatmap.html, hide or remove the "Postcodes" slider
@@ -27,45 +33,68 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   loadData().then(() => {
+    document.querySelectorAll("input[name='role']").forEach(input => {
+      input.addEventListener('change', function() {
+          if (this.checked) {
+              const selectedRole = this.value; // 'investor' or 'advisor'
+              const selectedName = this.id; // The ID of the radio button, e.g., 'Evan' or 'Natasha'
+  
+              // Determine which suburbs to highlight based on the selected name
+              const suburbsToHighlight = suburbColors[selectedName] || [];
+  
+              // Highlight the suburbs
+              highlightSuburbs(suburbsToHighlight);
+  
+              // Adjust visibility of additional options
+              if (selectedRole === 'investor') {
+                  document.getElementById("additional-investors").style.display = "block";
+                  document.getElementById("additional-advisors").style.display = "none";
+              } else if (selectedRole === 'advisor') {
+                  document.getElementById("additional-advisors").style.display = "block";
+                  document.getElementById("additional-investors").style.display = "none";
+              }
+          }
+      });
+    });
     document.querySelectorAll("input[name='dataset']").forEach(input => {
       input.addEventListener('change', function() {
-          if (this.value === 'evan') {
-            currentSelectedData  = evanData;
-          } else if (this.value === 'Henry' || this.value === 'Siarra' || this.value === 'Ruixing' || this.value === 'Toluwa'
-          || this.value === 'Newton'|| this.value === 'Jamie'|| this.value === 'Tony'|| this.value === 'Matt') {
-            currentSelectedData = (this.value === 'tony' ? tonyData : this.value === 'henry' ? henryData : newtonData);
-            highlightRandomSuburb(currentSelectedData); // This is the new function to implement
-          } else if (this.value === 'tony') {
-            currentSelectedData  = tonyData;
-          } else if (this.value === 'ruixing') {
-            currentSelectedData  = ruixingData;
-          } else if (this.value === 'value1') {
-            currentSelectedData  = census1;
-          } else if (this.value === 'value2') {
-            currentSelectedData  = census2;
-          } else if (this.value === 'value3') {
-            currentSelectedData  = census3;
-          } else if (this.value === 'value4') {
-            currentSelectedData  = census4;
-          } else if (this.value === 'value5') {
-            currentSelectedData  = census5;
-          } else if (this.value === 'value6') {
-            currentSelectedData  = census6;
-          } else if (this.value === 'value7') {
-            currentSelectedData  = census7;
-          } else if (this.value === 'value8') {
-            currentSelectedData  = census8;
-          } else if (this.value === 'value9') {
-            currentSelectedData  = census9;
-          } else if (this.value === 'value10') {
-            currentSelectedData  = census10;
-          } else if (this.value === 'value11') {
-            currentSelectedData  = census11;
-          } else if (this.value === 'value12') {
-            currentSelectedData  = census12;
-          } 
-          // Use currentSelectedData to update the visualization...
-          mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, currentSelectedData);
+        if (this.value === 'investor') {
+          highlightSuburbs(currentSelectedData);  // Ensure this is being reached
+        } else if (this.value === 'advisor') {
+          highlightSuburbs(currentSelectedData);  // Ensure this is being reached
+        } else if (this.value === 'evan') {
+          currentSelectedData  = evanData;
+        } else if (this.value === 'tony') {
+          currentSelectedData  = tonyData;
+        } else if (this.value === 'ruixing') {
+          currentSelectedData  = ruixingData;
+        } else if (this.value === 'value1') {
+          currentSelectedData  = census1;
+        } else if (this.value === 'value2') {
+          currentSelectedData  = census2;
+        } else if (this.value === 'value3') {
+          currentSelectedData  = census3;
+        } else if (this.value === 'value4') {
+          currentSelectedData  = census4;
+        } else if (this.value === 'value5') {
+          currentSelectedData  = census5;
+        } else if (this.value === 'value6') {
+          currentSelectedData  = census6;
+        } else if (this.value === 'value7') {
+          currentSelectedData  = census7;
+        } else if (this.value === 'value8') {
+          currentSelectedData  = census8;
+        } else if (this.value === 'value9') {
+          currentSelectedData  = census9;
+        } else if (this.value === 'value10') {
+          currentSelectedData  = census10;
+        } else if (this.value === 'value11') {
+          currentSelectedData  = census11;
+        } else if (this.value === 'value12') {
+          currentSelectedData  = census12;
+        } 
+        // Use currentSelectedData to update the visualization...
+        mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, currentSelectedData);
       });
     });
       document.querySelectorAll("input[name='visualizationType']").forEach(input => {
@@ -99,31 +128,17 @@ document.addEventListener('DOMContentLoaded', function() {
     navbarSideMenu.classList.remove('open'); // Remove open class
     overlay.style.display = 'none'; // Hide overlay
   });
-  document.getElementById('investor').addEventListener('change', function() {
-    if (this.checked) {
-        document.getElementById("additional-investors").style.display = "block";
-        document.getElementById("additional-advisors").style.display = "none"; // Hide Advisor names
-    }
 });
 
-document.getElementById('advisor').addEventListener('change', function() {
-    if (this.checked) {
-        document.getElementById("additional-advisors").style.display = "block";
-        document.getElementById("additional-investors").style.display = "none"; // Hide Investor names
-    }
-});
-});
-
-function highlightRandomSuburb(data) {
-  // Assume data is an array of objects each with a 'suburbName' and other properties
-  console.log("HIT!");
-  const randomIndex = Math.floor(Math.random() * data.length);
-  const suburbToHighlight = data[randomIndex].suburbName;
-  
-  // Assuming function to update map visualization
-  // This function should set the color of the selected suburb to bright orange
-  updateSuburbColorOnMap(suburbToHighlight, 'brightOrange');
+function highlightSuburbs(suburbs) {
+  // console.log("Highlighting suburbs:", suburbs);
+  const svg = d3.select(".aus-visualisation-item");
+  svg.selectAll("path.suburb")
+      .style("fill", function (d) {
+          return suburbs.includes(d.properties.name) ? "orange" : "";
+      });
 }
+
 
 // New function to adjust visibility based on selected visualization
 function adjustVisibilityForSelectedVisualization() {
@@ -176,52 +191,7 @@ function loadDataForDataPoint(dataPointKey) {
   });
 }
 
-function generateRandomNames() {
-  const names = ["Henry", "Siarra", "Ruixing", "Toluwa", "Newton", "Jamie", "Tony", "Matt"];
-  let selectedNames = [];
-  while (selectedNames.length < 3) {
-    const randomIndex = Math.floor(Math.random() * names.length);
-    const name = names[randomIndex];
-    if (!selectedNames.includes(name)) {
-      selectedNames.push(name);
-    }
-  }
-  return selectedNames;
-}
 
-function populateAdditionalSelectors() {
-  const investorsNames = generateRandomNames(); // Keep random names for investors
-  const advisorsNames = ["Evan", "Natasha"]; // Set fixed names for advisors
-
-  populateOptions("additional-investors", investorsNames, "additionalInvestor");
-  populateOptions("additional-advisors", advisorsNames, "additionalAdvisor");
-}
-
-function populateOptions(containerId, names, inputName) {
-  const container = document.getElementById(containerId);
-  if (container === null) {
-      console.error(`Element with ID '${containerId}' not found.`);
-      return; // Exit the function to avoid attempting to set properties on null
-  }
-
-  container.innerHTML = ''; // Proceed if the element exists
-
-  names.forEach(name => {
-    const input = document.createElement("input");
-    input.type = "radio";
-    input.name = inputName;
-    input.value = name;
-    input.id = `${inputName}-${name.toLowerCase().replace(/\s+/g, '-')}`; // Ensuring unique ID
-
-    const label = document.createElement("label");
-    label.htmlFor = input.id;
-    label.textContent = name;
-
-    container.appendChild(input);
-    container.appendChild(label);
-    container.appendChild(document.createElement("br"));
-  });
-}
 
 // **************************** MAIN VISUALISATION  ******************************************
 function mapVisualisationAUS(ausTopoStates, ausTopoPostCodes, selectedData) {
